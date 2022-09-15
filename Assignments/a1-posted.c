@@ -26,7 +26,7 @@ int main(){
 	int arrayCounter = getEmfData(uuidData, emfData);
 
 
-	printEmfData(uuidData, emfData, arrayCounter);	
+	printEmfData(uuidData, emfData, (arrayCounter>=0)? arrayCounter : 0);	
 
 	return(0);
 }
@@ -48,15 +48,13 @@ int getEmfData(int* uuid, float* emf){
 			uuid[arrayCounter] = currentUuid;
 			emf[arrayCounter++] = currentEmf;
 		}
-			/*
 		else if (arrayCounter>=MAX_SIZE){
-			return -1;
+			printErrorMsg(C_ERR_ARR_FULL);
 		}else if(validateUUID(currentUuid) == C_ERR_BAD_UUID){
-			return -3;
-		}else{
-			return -2;
+			printErrorMsg(C_ERR_BAD_UUID);
+		}else if(validateEMF(currentEmf)){
+			printErrorMsg(C_ERR_BAD_EMF);
 		}
-		*/
 	}while(currentUuid != -1 && currentEmf != -1);
 
 	
@@ -77,15 +75,28 @@ int  orderEmfData(int*, float*, int){
 }
 
 int  validateUUID(int uuid){	
-	return (uuid >= 32850000 && uuid <= 32859999) ? C_OK : C_ERR_BAD_UUID;
+	return (uuid >= 32850000 && uuid <= 32859999 && uuid != -1) ? C_OK : C_ERR_BAD_UUID;
 }
 
 int  validateEMF(float emf){
-	return (emf >= 0.0 && emf <= 5.0) ? C_OK : C_ERR_BAD_EMF;
+	return (emf >= 0.0 && emf <= 5.0 && emf != -1) ? C_OK : C_ERR_BAD_EMF;
 }
 
-void printErrorMsg(int){
+void printErrorMsg(int val){
+    switch(val){
+        case C_ERR_ARR_FULL:
+            printf("You've reached the maximum number of entries'");
+            break;
+        case C_ERR_BAD_UUID:
+            printf("Invalid UUID!");
+            break;
+        case C_ERR_BAD_EMF:
+            printf("Invalid EMF!");
+            break;
+        
 
+
+    }
 }
 
 //Find the index which corresponds to the largest element

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define MAX_SIZE  32
+#define MAX_SIZE  1
 
 #define C_OK             0	// Success flag
 #define C_ERR_ARR_FULL  -1	// Error code for array is full
@@ -45,7 +45,6 @@ int getEmfData(int* uuid, float* emf){
 		printf("\t| 1. Enter an integer between 32850000 & 32859999 for the UUID value%22s\n\t| 2. Enter a float between 0.0 & 5.0 for the EMF value%36s\n\t| 3. Both values should be entered on the same line with a single space in between%8s\n","|", "|", "|");	
 		printf("\t------------------------------------------------------------------------------------------\n\n");
 
-
 	do{
 	
 		printf("\tEntry #%d: ", arrayCounter+1);
@@ -56,11 +55,11 @@ int getEmfData(int* uuid, float* emf){
 			uuid[arrayCounter] = currentUuid;
 			emf[arrayCounter++] = currentEmf;
 		}else if (arrayCounter>=MAX_SIZE){
-			printErrorMsg(C_ERR_ARR_FULL);
+			return C_ERR_ARR_FULL;
 		}else if(currentUuid != -1 && validateUUID(currentUuid) == C_ERR_BAD_UUID){
-			printErrorMsg(C_ERR_BAD_UUID);
+			return C_ERR_BAD_UUID;
 		}else if(currentEmf != -1 && validateEMF(currentEmf)){
-			printErrorMsg(C_ERR_BAD_EMF);
+			return C_ERR_BAD_EMF;
 		}
 	}while(currentUuid != -1 && currentEmf != -1);
 
@@ -117,7 +116,7 @@ int validateEMF(float emf){
 void printErrorMsg(int val){
     switch(val){
         case C_ERR_ARR_FULL:
-            printf("Error: You've reached the maximum number of entries\n");
+            printf("\n\tError: You've reached the maximum number of entries\n");
             break;
         case C_ERR_BAD_UUID:
             printf("\n\tError: Invalid UUID!\n\n");

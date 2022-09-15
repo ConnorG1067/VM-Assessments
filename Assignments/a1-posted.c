@@ -24,8 +24,12 @@ int main(){
   	float emfData[MAX_SIZE];
 	//Only one counter is needed because the arrays are synchronized
 	int arrayCounter = getEmfData(uuidData, emfData);
+	printf("\n\tUNSORTED");
+	printEmfData(uuidData, emfData, (arrayCounter>=0)? arrayCounter : 0);	
+	
 
-
+	orderEmfData(uuidData, emfData, arrayCounter);
+	printf("\n\tSORTED");
 	printEmfData(uuidData, emfData, (arrayCounter>=0)? arrayCounter : 0);	
 
 	return(0);
@@ -37,22 +41,25 @@ int getEmfData(int* uuid, float* emf){
 	float currentEmf = 0;
 	int arrayCounter = 0;
 
-	do{
+	printf("\t------------------------------------------------------------------------------------------\n");
+		printf("\t| 1. Enter an integer between 32850000 & 32859999 for the UUID value%22s\n\t| 2. Enter a float between 0.0 & 5.0 for the EMF value%36s\n\t| 3. Both values should be entered on the same line with a single space in between%8s\n","|", "|", "|");	
+		printf("\t------------------------------------------------------------------------------------------\n\n");
 
-		printf("Enter an integer between 32850000 & 32859999 for the UUID value\nEnter a float between 0.0 & 5.0 for the EMF value\nBoth values should be entered on the same line with a single space in between\t");
+
+	do{
+	
+		printf("\tEntry #%d: ", arrayCounter+1);
 		scanf("%d ", &currentUuid);
 		scanf("%f", &currentEmf);
 	
-//Currently exits code on faults	
 		if(validateUUID(currentUuid) == 0 && validateEMF(currentEmf) == 0 && arrayCounter<MAX_SIZE){
 			uuid[arrayCounter] = currentUuid;
 			emf[arrayCounter++] = currentEmf;
-		}
-		else if (arrayCounter>=MAX_SIZE){
+		}else if (arrayCounter>=MAX_SIZE){
 			printErrorMsg(C_ERR_ARR_FULL);
-		}else if(validateUUID(currentUuid) == C_ERR_BAD_UUID){
+		}else if(currentUuid != -1 && validateUUID(currentUuid) == C_ERR_BAD_UUID){
 			printErrorMsg(C_ERR_BAD_UUID);
-		}else if(validateEMF(currentEmf)){
+		}else if(currentEmf != -1 && validateEMF(currentEmf)){
 			printErrorMsg(C_ERR_BAD_EMF);
 		}
 	}while(currentUuid != -1 && currentEmf != -1);
@@ -64,34 +71,59 @@ int getEmfData(int* uuid, float* emf){
 }
 
 void printEmfData(int* uuid, float* emf, int num){
+
+	printf("\n\t----------------------------\n");	
+	printf("\t|UUID%19sEMF|\n", "");
+	printf("\t|%26s|\n", "");
 	for(int i = 0; i<num; i++){
-		printf("%20d %0.1f\n", uuid[i], emf[i]);
+		printf("\t|%8d%15s%0.1f|\n", uuid[i], "",emf[i]);
 	}
-	printf("%12sTotal Pairs:  %d\n", "" ,num);
+	printf("\t----------------------------\n");
+	printf("\tTotal Pairs: %*s%d\n", (num<10) ? 14 : 13 ,"",num);
 }
 
-int  orderEmfData(int*, float*, int){
+int orderEmfData(int* uuid, float* emf, int num){
+	int localUuid[num];
+	float localEmf[num];
 
+	//deep copy both arrays
+	for(int i = 0; i<num; i++){
+		localUuid[i] = uuid[i];
+		localEmf[i] = emf[i];
+	}
+	
+	for(int i = 0; i<num; i++){
+
+		//Find the highest index
+		int currentHighestEmfIndex = findMaxIndex(localEmf, num);
+
+		emf[i] = localEmf[currentHighestEmfIndex];
+		uuid[i] = localUuid[currentHighestEmfIndex];
+
+		localEmf[currentHighestEmfIndex] = -1;
+	}
+	
+	return C_OK;
 }
 
-int  validateUUID(int uuid){	
-	return (uuid >= 32850000 && uuid <= 32859999 && uuid != -1) ? C_OK : C_ERR_BAD_UUID;
+int validateUUID(int uuid){	
+	return (uuid >= 32850000 && uuid <= 32859999) ? C_OK : C_ERR_BAD_UUID;
 }
 
-int  validateEMF(float emf){
-	return (emf >= 0.0 && emf <= 5.0 && emf != -1) ? C_OK : C_ERR_BAD_EMF;
+int validateEMF(float emf){
+	return (emf >= 0.0 && emf <= 5.0) ? C_OK : C_ERR_BAD_EMF;
 }
 
 void printErrorMsg(int val){
     switch(val){
         case C_ERR_ARR_FULL:
-            printf("You've reached the maximum number of entries'");
+            printf("Error: You've reached the maximum number of entries\n");
             break;
         case C_ERR_BAD_UUID:
-            printf("Invalid UUID!");
+            printf("\n\tError: Invalid UUID!\n\n");
             break;
         case C_ERR_BAD_EMF:
-            printf("Invalid EMF!");
+            printf("\n\tError: Invalid EMF!\n\n");
             break;
         
 
@@ -103,8 +135,8 @@ void printErrorMsg(int val){
 int findMaxIndex(float* emf, int emfSize){
 	int maxIndex = 0;
 	for(int i = 0; i<emfSize; i++){
-		if(emf[i] > maxIndex){
-			maxIndex = emf[i];
+		if(emf[i] > emf[maxIndex]){
+			maxIndex = i;
 		}
 	}
 	return maxIndex;

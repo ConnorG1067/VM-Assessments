@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define MAX_SIZE  1
+#define MAX_SIZE  32
 
 #define C_OK             0	// Success flag
 #define C_ERR_ARR_FULL  -1	// Error code for array is full
@@ -24,14 +24,20 @@ int main(){
   	float emfData[MAX_SIZE];
 	//Only one counter is needed because the arrays are synchronized
 	int arrayCounter = getEmfData(uuidData, emfData);
-	printf("\n\tUNSORTED");
-	printEmfData(uuidData, emfData, (arrayCounter>=0)? arrayCounter : 0);	
+	printErrorMsg(arrayCounter);
+
+	if(arrayCounter>=0){
+		printf("\n\tUNSORTED");
+		printEmfData(uuidData, emfData, arrayCounter);	
 	
 
-	orderEmfData(uuidData, emfData, arrayCounter);
-	printf("\n\tSORTED");
-	printEmfData(uuidData, emfData, (arrayCounter>=0)? arrayCounter : 0);	
+		orderEmfData(uuidData, emfData, arrayCounter);
+		printf("\n\tSORTED");
+		printEmfData(uuidData, emfData, arrayCounter);	
 
+
+	}
+	
 	return(0);
 }
 
@@ -48,8 +54,7 @@ int getEmfData(int* uuid, float* emf){
 	do{
 	
 		printf("\tEntry #%d: ", arrayCounter+1);
-		scanf("%d ", &currentUuid);
-		scanf("%f", &currentEmf);
+		scanf("%d %f", &currentUuid, &currentEmf);
 	
 		if(validateUUID(currentUuid) == 0 && validateEMF(currentEmf) == 0 && arrayCounter<MAX_SIZE){
 			uuid[arrayCounter] = currentUuid;
@@ -63,7 +68,7 @@ int getEmfData(int* uuid, float* emf){
 		}
 	}while(currentUuid != -1 && currentEmf != -1);
 
-	
+
 	return arrayCounter;
 
 	
@@ -124,7 +129,8 @@ void printErrorMsg(int val){
         case C_ERR_BAD_EMF:
             printf("\n\tError: Invalid EMF!\n\n");
             break;
-        
+		default:
+			break;
 
 
     }

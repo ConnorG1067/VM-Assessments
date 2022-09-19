@@ -15,13 +15,17 @@ int main(void){
 
 
 int gcd(int a, int b){
+    //Finds smallest value between the two values
     int smallestInt = (a<b) ? a : b;
+    //Sets the current greatest common divisor to 1
     int greatestCommon = 1;
     for(int i = 1; i<=smallestInt; i++){
+        //If both have no remainder then it is considered a GCD
         if(a%i==0 && b%i==0){
             greatestCommon = i;
         }
     }
+
     return greatestCommon;
 
 }

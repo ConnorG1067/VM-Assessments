@@ -1,31 +1,35 @@
 #include <stdio.h>
 
+//Constants
 #define MAX_SIZE  32
-
 #define C_OK             0	// Success flag
 #define C_ERR_ARR_FULL  -1	// Error code for array is full
 #define C_ERR_BAD_EMF   -2	// Error code for an invalid EMF value
 #define C_ERR_BAD_UUID  -3	// Error code for an invalid UUID value
 #define C_ERR_BAD_ARR   -4	// Error code for an array error
 
+//Function Declarations
 int  getEmfData(int*, float*);
 void printEmfData(int*, float*, int);
 int  orderEmfData(int*, float*, int);
 
 int  validateUUID(int);
 int  validateEMF(float);
-void printErrorMsg(int);        // Hint: Write modular code using helper functions for repeated functionality
+void printErrorMsg(int);      
 int  findMaxIndex(float*, int);
 
 
 int main(){
-	//Keep The two Synchronized 
+	//Create two arrays of max size, one for the uuid & the other for the emf
 	int uuidData[MAX_SIZE];
   	float emfData[MAX_SIZE];
 	//Only one counter is needed because the arrays are synchronized
+    //Call the function getEmfData to and store the returned in in arrayCounter variable
 	int arrayCounter = getEmfData(uuidData, emfData);
-	printErrorMsg(arrayCounter);
+	//Print the error message of the array counter, provided there is an error
+    printErrorMsg(arrayCounter);
 
+    //If there was no error print the data un sorted & sorted for comparison
 	if(arrayCounter>=0){
 		printf("\n\tUNSORTED");
 		printEmfData(uuidData, emfData, arrayCounter);	
@@ -34,14 +38,16 @@ int main(){
 		orderEmfData(uuidData, emfData, arrayCounter);
 		printf("\n\tSORTED");
 		printEmfData(uuidData, emfData, arrayCounter);	
-
-
 	}
 	
 	return(0);
 }
 
-
+/*
+ * Description:
+ * Parameters
+ * Return:
+ */
 int getEmfData(int* uuid, float* emf){
 	int currentUuid = 0;
 	float currentEmf = 0;

@@ -6,7 +6,7 @@ Description: This program takes two values from the user.
 			 a UUID. Every UUID has an EMF value associated 
 			 with it. When the user is finished entering the data
 			 the program detects for errors, if an error is present
-			 the program notifies the useri and terminates. If there are no errors
+			 the program notifies the user and terminates. If there are no errors
 			 The program prints the unsorted list along with the 
 			 number of elements they entered and then prints the
 			 sorted list along with the number of elements they enetered.

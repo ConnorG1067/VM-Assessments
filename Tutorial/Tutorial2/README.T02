@@ -1,0 +1,19 @@
+Connor Gomes
+101231686
+
+List of files
+hello.c
+divisor.c
+README.T02
+
+Purpose:
+Prints "Hello World" to the command line
+Prints the gcd of two values a and b
+
+Hello World Compilation Command
+gcc -Wall -o hello -std=c99 hello.c
+./hello
+
+GCD Compilation Command
+gcc -Wall -o gcd divisor -std=c99 divisor.c
+./divisor

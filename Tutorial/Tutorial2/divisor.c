@@ -1,10 +1,15 @@
 #include <stdio.h>
 
+int gcd(int,int);
 
 int main(void){
-    int gcd(int,int);
-    int greatestCommonDivisor = gcd(32,16);
-    printf("%d\n", greatestCommonDivisor);
+
+    for(int i = 1; i<15; i++){
+        for(int j = 1; j<15; j++){
+            int greatestCommonDivisor = gcd(i,j);
+            printf("GCD for numbers %d, %d: %d\n",i,j,greatestCommonDivisor);   
+        }
+    }
     return 0;
 }
 

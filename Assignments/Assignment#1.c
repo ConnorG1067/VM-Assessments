@@ -63,7 +63,7 @@ int getEmfData(int* uuid, float* emf){
 				return C_ERR_ARR_FULL;
 		}else if(currentUuid != -1 && validateUUID(currentUuid) == C_ERR_BAD_UUID){
 				return C_ERR_BAD_UUID;
-		}else if(currentEmf != -1 && validateEMF(currentEmf)){
+		}else if(currentEmf != -1 && validateEMF(currentEmf) == C_ERR_BAD_EMF){
 				return C_ERR_BAD_EMF;
 		}
 	}while(currentUuid != -1 && currentEmf != -1);
@@ -78,7 +78,6 @@ int getEmfData(int* uuid, float* emf){
  * Return: Returns a void
  *****************************************************************************************************************************************************************************************************************/
 void printEmfData(int* uuid, float* emf, int num){
-
 	printf("\n\t----------------------------\n");	
 	printf("\t|UUID%19sEMF|\n", "");
 	printf("\t|%26s|\n", "");

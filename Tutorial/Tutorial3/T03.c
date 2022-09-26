@@ -34,7 +34,22 @@ int main() {
   printBits(a);
   printf("\n");
 
+
+  for(int i = 0; i<2; i++){
+        for(int j = 0; j<3; j++){
+            for(int k = 0; k<3; k++){
+                printBits(arr[i][j][k]);
+                arr[i][j][k] = clearBit(arr[i][j][k], 6);
+                arr[i][j][k] = setBit(arr[i][j][k], 3);
+                printBits(arr[i][j][k]);
+                printf("\n");
+            }
+        }
+
+  }
+
   //Calling printIntBits on 82
+  printf("\n82 as binary\n");
   printIntBits(82);
 
   return 0;
@@ -55,37 +70,20 @@ unsigned char clearBit(unsigned char c, int n) {
 
 //Prints the bits of an unsigned char
 void printBits(unsigned char c) {
-    int bits[8];
-    int cAsInt = (int) c;
     //Converting from decimal to binary and storing in an array
     for(int i = 7; i>=0; i--){
-        bits[i] = (cAsInt%2>0) ? 1 : 0;
-        cAsInt/=2;
-    }
-    
-    //Prints the bits for the user from the array
-    for(int i = 0; i< 8; i++){
-        printf("%d", bits[i]);
-
+      printf("%d", getBit((int) c, i)); 
     }
     printf("\n");
+    
 }
 
 
 //Same function as above, but using an int rather than an unsigned char
 void printIntBits(int n){
-    int bits[8];
-    int changableN = n;
+    //Converting from decimal to binary and storing in an array
     for(int i = 7; i>=0; i--){
-        bits[i] = (changableN%2>0) ? 1 : 0;
-        changableN/=2;
-    }
-    
-
-    printf("Decimal To Binary %d\n", n);
-    for(int i = 0; i< 8; i++){
-        printf("%d", bits[i]);
-
+      printf("%d", getBit(n, i)); 
     }
     printf("\n");
 }

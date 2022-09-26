@@ -126,7 +126,7 @@ int orderEmfData(int* uuid, float* emf, int num){
 /******************************************************************************************************
  * Description: Determines whether a given uuid is valid or not
  * Parameters:	uuid is an input parameter because it is only used as information and never written to
- * Return:i		Returns an integer which corresponds to an error code
+ * Return:		Returns an integer which corresponds to an error code
  *****************************************************************************************************/
 int validateUUID(int uuid){	
 	return (uuid >= 32850000 && uuid <= 32859999) ? C_OK : C_ERR_BAD_UUID;

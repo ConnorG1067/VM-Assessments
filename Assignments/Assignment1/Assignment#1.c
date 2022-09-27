@@ -170,10 +170,14 @@ void printErrorMsg(int val){
  ************************************************************************************************************/
 int findMaxIndex(float* emf, int emfSize){
 	int maxIndex = 0;
-	
+
+    if(emfSize<=0){
+        return C_ERR_BAD_ARR;
+    }
+
 	for(int i = 0; i<emfSize; i++){
 		//If the value at the current emf index is greater than the emf at maxIndex, set the maxIndex to the current index
-		if(emf[i] > emf[maxIndex]){
+        if(emf[i] > emf[maxIndex]){
 			maxIndex = i;
 		}
 	}

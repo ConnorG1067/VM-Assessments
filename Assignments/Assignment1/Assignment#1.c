@@ -120,7 +120,7 @@ int orderEmfData(int* uuid, float* emf, int num){
 		//Set the currentHighestEmfIndex to -1 to prevent the same max value from being selected
 		localEmf[currentHighestEmfIndex] = -1;
 	}
-	return C_OK;
+	return C_OK
 }
 
 /******************************************************************************************************

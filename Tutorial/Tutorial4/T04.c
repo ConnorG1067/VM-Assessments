@@ -47,13 +47,10 @@ void decryptCaesar(char *ciphertext, unsigned char key) {
   int i = 0;
   while (ciphertext[i]!='\0'){
     if(ciphertext[i] < 69 && ciphertext[i] >=65){
-        printf("%d\n", (ciphertext[i]-key));
-        ciphertext[i] = 90-((ciphertext[i]-key) % 65);
+        ciphertext[i] = 91-(65%(ciphertext[i]-key));
     }else if(ciphertext[i]>=65 && ciphertext[i]<=90){
         ciphertext[i] -= key;
     }
     i++;
   } 
-
-
 }

@@ -38,10 +38,11 @@ int main()
   switch (choice) {
     case 1:
 	  char encryptMsg[100];
+      char cipherMsg[100];
 
 	  fgets(encryptMsg, sizeof(encryptMsg), stdin);
-	  processCtr(CTR, KEY);
-	  
+        
+      encode(encryptMsg, cipherMsg, sizeof(encryptMsg));
       break;
 
     case 2:
@@ -91,12 +92,12 @@ unsigned char clearBit(unsigned char c, int n)
 //Processing the counter value
 unsigned char processCtr(unsigned char ctr, unsigned char key){
 	int tempCounter = ctr;
-	printf("%d\n", tempCounter);
-	for(int i = (tempCounter%2 == 0) ? 0 : 1; i < 7; i+=2){
-		tempCounter = setBit(getBit(ctr, i)^getBit(key, i), i);
-		printf("%u\n",setBit(getBit(ctr, i)^getBit(key, i), i));
-	}
-
+	for(int i = (tempCounter%2 == 0) ? 0 : 1; i<8; i+=2){
+        int xorVal = getBit(ctr, i)^getBit(key, i);
+        //printf("%u, %u = %u\n", getBit(ctr, i), getBit(key, i), xorVal);
+        //If the xorVal is 0 clear the bit at the position if it is not 0 then set the bit
+		tempCounter = (xorVal == 0) ? clearBit(tempCounter, i) : setBit(tempCounter,i);
+	} 
 	return tempCounter;
 }
 //Ctr = counter, pt = plain text, prev = previous 
@@ -105,14 +106,26 @@ unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char pre
 
 	for(int i = 0; i<7; i++){
 		if(getBit(ctr, i) == 1){
-			tempByte = setBit(getBit(pt, i)^getBit(prev, i), i);
+            int xorVal = getBit(pt, i)^getBit(prev, i);
+			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
 		}else{
-			tempByte = setBit(getBit(pt, i) ^ getBit(prev, 7-i), i);
-		}
+            int xorVal = getBit(pt, i)^getBit(prev, 7-i);
+			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
+        }
 	}
+
 	return tempByte;
 }
 
 void encode(unsigned char* pt, unsigned char* ct, int numBytes){
+    int i = 0; 
+    int counter = CTR;
 
-}
+    while(pt[i] != '\0'){
+        ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
+        printf("%u ", ct[i]);
+        counter++;
+        i++;
+    }
+
+

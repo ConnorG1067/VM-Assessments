@@ -16,6 +16,17 @@ int main() {
   decryptCaesar(plain, 5);
   printf("%s\n", plain);
 
+  for(int i = 1; i<27; i++){
+    char cipher[] = "Mvez, mzuz, mztz (Z trdv, Z jrn, Z tfehlvivu)";
+    toUpper(cipher);
+    decryptCaesar(cipher, i);
+    printf("#%d: %s\n", i, cipher);
+  }
+
+  printf("Number 17 is the decrypted message and thus the cipher key is 17.");
+
+  
+
   return 0;
 }
 
@@ -46,11 +57,21 @@ void decryptCaesar(char *ciphertext, unsigned char key) {
   toUpper(ciphertext);
   int i = 0;
   while (ciphertext[i]!='\0'){
-    if(ciphertext[i] < 69 && ciphertext[i] >=65){
+    if(ciphertext[i]>=65 && ciphertext[i]<=90){
+        int currentCipher = ((ciphertext[i]-65-key)%26)+65;
+        ciphertext[i] = (((ciphertext[i]-65-key)%26) < 0) ? currentCipher+26 : currentCipher ; 
+    }
+    i++;
+  } 
+
+  /*
+  while (ciphertext[i]!='\0'){
+    if(ciphertext[i] <= 69 && ciphertext[i] >=65){
         ciphertext[i] = 91-(65%(ciphertext[i]-key));
     }else if(ciphertext[i]>=65 && ciphertext[i]<=90){
         ciphertext[i] -= key;
     }
     i++;
   } 
+  */
 }

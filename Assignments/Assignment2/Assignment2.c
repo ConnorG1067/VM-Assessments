@@ -37,8 +37,8 @@ int main()
 
   switch (choice) {
     case 1:
-	  char encryptMsg[100];
-      char cipherMsg[100];
+	  char encryptMsg[MAX_BUF];
+      char cipherMsg[MAX_BUF];
 
 	  fgets(encryptMsg, sizeof(encryptMsg), stdin);
         
@@ -104,7 +104,7 @@ unsigned char processCtr(unsigned char ctr, unsigned char key){
 unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char prev){
 	int tempByte = 0;
 
-	for(int i = 0; i<7; i++){
+	for(int i = 0; i<8; i++){
 		if(getBit(ctr, i) == 1){
             int xorVal = getBit(pt, i)^getBit(prev, i);
 			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
@@ -117,15 +117,29 @@ unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char pre
 	return tempByte;
 }
 
+//Review this shit show of a function
 void encode(unsigned char* pt, unsigned char* ct, int numBytes){
     int i = 0; 
-    int counter = CTR;
+    int counter = processCtr(CTR, KEY);
 
-    while(pt[i] != '\0'){
+    do{
+		//Testing values
+		printf("%c, ", pt[i]);
+		printf("%d: ", i);
         ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
-        printf("%u ", ct[i]);
+        printf("%u\n", ct[i]);
         counter++;
         i++;
-    }
+    }while(pt[i+1] != '\0');
+}
 
+unsigned char decryptByte(unsigned char ct, unsigned char ctr, unsigned char prev){
+
+
+}
+
+
+//Note we read our bits from right to left
+//
+//
 

@@ -46,6 +46,14 @@ int main()
 	  //If the user chooses to encrypt
 	  fgets(encryptMsg, sizeof(encryptMsg), stdin);
       encode(encryptMsg, cipherMsg, sizeof(encryptMsg));
+	
+	  //Prints the cipher text
+	  int i = 0;
+	  do{
+		printf("%u ", cipherMsg[i]);
+		i++;
+	  }while(encryptMsg[i+1] != '\0');
+
       break;
     case 2:
 	  //If the user chooses to decrypt
@@ -67,12 +75,20 @@ int main()
 	  }
 	  //Decode the users cipherMsg
       decode(cipherMsg, encryptMsg, arrayCounter);
+	  
+	  //Prints the plain text
+	  for(int i = 0; i<arrayCounter; i++){
+		printf("%c ",encryptMsg[i]);
+	  }
+	  
 
       break;
   }
 
   return(0);
 }
+
+
 
 
 /* Function:   getBit
@@ -191,7 +207,6 @@ void encode(unsigned char* pt, unsigned char* ct, int numBytes){
 		//Set the current cipher text position to the value retrieved from encryptByte
 		//If this is the first iteration use IV otherwise use the previous cipher text byte
         ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
-        printf("%u ", ct[i]);
 		//Increment the counter and i
         counter++;
         i++;
@@ -217,7 +232,6 @@ void decode(unsigned char *ct, unsigned char *pt, int numBytes){
 		//Set the current plain text position to the value retrieved from decryptByte
 		//If this is the first iteration use IV otherwise use the previous cipher text byte
         pt[i] = decryptByte(ct[i], counter, (i == 0) ? IV : ct[i-1]);	
-        printf("%c ", pt[i]);
 		//Increment the counter and i
         counter++;
         i++;

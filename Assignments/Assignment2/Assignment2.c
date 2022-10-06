@@ -23,14 +23,18 @@ int main()
   char str[8];
   int  choice;
 	
+  //Creating two message arrays with a size of MAX_BUF
   unsigned char encryptMsg[MAX_BUF];
   unsigned char cipherMsg[MAX_BUF];
 
+  //Prompting the user
   printf("\nYou may:\n");
   printf("  (1) Encrypt a message \n");
   printf("  (2) Decrypt a message \n");
   printf("  (0) Exit\n");
   printf("\n  what is your selection: ");
+
+  //Getting user input
   fgets(str, sizeof(str), stdin);
   sscanf(str, "%d", &choice);
 
@@ -39,22 +43,29 @@ int main()
 
   switch (choice) {
     case 1:
+	  //If the user chooses to encrypt
 	  fgets(encryptMsg, sizeof(encryptMsg), stdin);
       encode(encryptMsg, cipherMsg, sizeof(encryptMsg));
       break;
-
     case 2:
-	  printf("\n  Use \"-1\" to end your message to decrypt");
-	  int arrayCounter = 0;
-	  unsigned int currentValue;
+	  //If the user chooses to decrypt
+	  printf("\n  Use \"-1\" to end your message to decrypt:\n  ");
 
+	  //Counter for the values in the array
+	  int arrayCounter = 0;
+	  //The variable for the current user input
+	  unsigned currentValue;
+
+	  //Scan for user input until currentValue is -1
 	  while(1){
 		scanf("%u", &currentValue);
 		if(currentValue == -1){
 			break;
 		}
+		//Each iteration add currentValue to the cipherMsg array, provided the value is not -1
 		cipherMsg[arrayCounter++] = currentValue; 	
 	  }
+	  //Decode the users cipherMsg
       decode(cipherMsg, encryptMsg, arrayCounter);
 
       break;
@@ -64,25 +75,23 @@ int main()
 }
 
 
-/* Function:  getBit
+/* Function:   getBit
     Purpose:   retrieve value of bit at specified position
          in:   character from which a bit will be returned
          in:   position of bit to be returned
      return:   value of bit n in character c (0 or 1)
 */
-unsigned char getBit(unsigned char c, int n)
-{
+unsigned char getBit(unsigned char c, int n){
 	return (c & (1 << n)) >> n;
 }
 
-/* Function:  setBit
+/* Function:   setBit
     Purpose:   set specified bit to 1
          in:   character in which a bit will be set to 1
          in:   position of bit to be set to 1
      return:   new value of character c with bit n set to 1
 */
-unsigned char setBit(unsigned char c, int n)
-{
+unsigned char setBit(unsigned char c, int n){
 	return c = c | (1 << n);
 }
 
@@ -92,8 +101,7 @@ unsigned char setBit(unsigned char c, int n)
          in:   position of bit to be set to 0
      return:   new value of character c with bit n set to 0
 */
-unsigned char clearBit(unsigned char c, int n)
-{
+unsigned char clearBit(unsigned char c, int n){
 	return c & (~(1 << n));
 }
 
@@ -105,8 +113,10 @@ unsigned char clearBit(unsigned char c, int n)
 */
 unsigned char processCtr(unsigned char ctr, unsigned char key){
 	int tempCounter = ctr;
-	for(int i = (tempCounter%2 == 0) ? 0 : 1; i<8; i+=2){
+	//Start at position 0 is tempCounter is even otherwise, start at 0
+	for(int i = tempCounter%2; i<8; i+=2){
         int xorVal = getBit(ctr, i)^getBit(key, i);
+		//If xorVal is 0 clear the bit at the ith position, otherwise, set the bit at the ith position to 1
 		tempCounter = (xorVal == 0) ? clearBit(tempCounter, i) : setBit(tempCounter,i);
 	} 
 	return tempCounter;
@@ -121,17 +131,19 @@ unsigned char processCtr(unsigned char ctr, unsigned char key){
 */
 unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char prev){
 	int tempByte = 0;
-
+	//Loop through all bits
 	for(int i = 0; i<8; i++){
+		//If the bit at the ith position is 1 xor the pt and prev bit at the ith position
 		if(getBit(ctr, i) == 1){
             int xorVal = getBit(pt, i)^getBit(prev, i);
 			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
+		//If the bit at the ith position is 0 xor the pt and prev mirror bit at the ith position
 		}else{
             int xorVal = getBit(pt, i)^getBit(prev, 7-i);
 			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
         }
 	}
-
+	//Return the encrypted byte
 	return tempByte;
 }
 
@@ -144,17 +156,19 @@ unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char pre
 */
 unsigned char decryptByte(unsigned char ct, unsigned char ctr, unsigned char prev){
 	int tempByte = 0;
-
+	//Loop through all bits
 	for(int i = 0; i<8; i++){
+		//If the bit at the ith position is 1 xor the ct and prev bit at the ith position
 		if(getBit(ctr, i) == 1){
             int xorVal = getBit(ct, i)^getBit(prev, i);
 			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
+		//If the bit at the ith position is 0 xor the ct and prev mirror bit at the ith position
 		}else{
             int xorVal = getBit(ct, i)^getBit(prev, 7-i);
 			tempByte = (xorVal == 0) ? clearBit(tempByte, i) : setBit(tempByte, i);
         }
 	}
-
+	//Return the decrypted byte
 	return tempByte;
 }
 
@@ -166,19 +180,25 @@ unsigned char decryptByte(unsigned char ct, unsigned char ctr, unsigned char pre
 	 return:   void
 */
 void encode(unsigned char* pt, unsigned char* ct, int numBytes){
+	//Create a counter variable to populate the cipher text array
     int i = 0; 
+	//Create a counter variable for the counter used for the encryption/decryption algorithm
     int counter = CTR;
 
     do{
+		//Process the counter
 		counter = processCtr(counter, KEY);
+		//Set the current cipher text position to the value retrieved from encryptByte
+		//If this is the first iteration use IV otherwise use the previous cipher text byte
         ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
         printf("%u ", ct[i]);
+		//Increment the counter and i
         counter++;
         i++;
-    }while(pt[i+1] != '\0');
+    }while(i<numBytes);
 }
 
-/* Function:  decode
+/* Function:   decode
     Purpose:   Makes use of processCtr & decryptByte to decrypt user input
      in/out:   ct represents the cipher text array
      in/out:   pt represents the plain text array
@@ -186,13 +206,19 @@ void encode(unsigned char* pt, unsigned char* ct, int numBytes){
 	 return:   void
 */
 void decode(unsigned char *ct, unsigned char *pt, int numBytes){
+	//Create a counter variable to populate the plain text array
 	int i = 0; 
+	//Create a counter variable for the counter used for the encryption/decryption algorithm
     int counter = CTR;
 
     do{
+		//Process the counter
 		counter = processCtr(counter, KEY);
-        pt[i] = decryptByte(ct[i], counter, (i == 0) ? IV : ct[i-1]);
+		//Set the current plain text position to the value retrieved from decryptByte
+		//If this is the first iteration use IV otherwise use the previous cipher text byte
+        pt[i] = decryptByte(ct[i], counter, (i == 0) ? IV : ct[i-1]);	
         printf("%c ", pt[i]);
+		//Increment the counter and i
         counter++;
         i++;
     }while(i < numBytes);

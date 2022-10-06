@@ -44,7 +44,7 @@ int main()
       break;
 
     case 2:
-	  printf("\n  Use \"-1\" to end your message to decrypt\n  >");
+	  printf("\n  Use \"-1\" to end your message to decrypt");
 	  int arrayCounter = 0;
 	  unsigned int currentValue;
 

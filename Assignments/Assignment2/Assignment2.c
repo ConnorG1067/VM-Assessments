@@ -17,7 +17,6 @@ unsigned char decryptByte(unsigned char, unsigned char, unsigned char);
 unsigned char getBit(unsigned char, int);
 unsigned char setBit(unsigned char, int);
 unsigned char clearBit(unsigned char, int);
-void printBits(unsigned char);
 
 int main()
 {
@@ -65,43 +64,45 @@ int main()
 }
 
 
-/*
-  Function:  getBit
-  Purpose:   retrieve value of bit at specified position
-       in:   character from which a bit will be returned
-       in:   position of bit to be returned
-   return:   value of bit n in character c (0 or 1)
+/* Function:  getBit
+    Purpose:   retrieve value of bit at specified position
+         in:   character from which a bit will be returned
+         in:   position of bit to be returned
+     return:   value of bit n in character c (0 or 1)
 */
 unsigned char getBit(unsigned char c, int n)
 {
 	return (c & (1 << n)) >> n;
 }
 
-/*
-  Function:  setBit
-  Purpose:   set specified bit to 1
-       in:   character in which a bit will be set to 1
-       in:   position of bit to be set to 1
-   return:   new value of character c with bit n set to 1
+/* Function:  setBit
+    Purpose:   set specified bit to 1
+         in:   character in which a bit will be set to 1
+         in:   position of bit to be set to 1
+     return:   new value of character c with bit n set to 1
 */
 unsigned char setBit(unsigned char c, int n)
 {
 	return c = c | (1 << n);
 }
 
-/*  Function:  clearBit
-  Purpose:   set specified bit to 0
-       in:   character in which a bit will be set to 0
-       in:   position of bit to be set to 0
-   return:   new value of character c with bit n set to 0
+/* Function:   clearBit
+    Purpose:   set specified bit to 0
+         in:   character in which a bit will be set to 0
+         in:   position of bit to be set to 0
+     return:   new value of character c with bit n set to 0
 */
 unsigned char clearBit(unsigned char c, int n)
 {
 	return c & (~(1 << n));
 }
 
-
-//Processing the counter value
+/* Function:   processCtr
+    Purpose:   processes the counter variable in encode/decode
+         in:   ctr represents the counter value
+         in:   key represents the key to decrypt/encrypt the bytes
+	 return:   returns the updated counter value 
+*/
 unsigned char processCtr(unsigned char ctr, unsigned char key){
 	int tempCounter = ctr;
 	for(int i = (tempCounter%2 == 0) ? 0 : 1; i<8; i+=2){
@@ -111,6 +112,13 @@ unsigned char processCtr(unsigned char ctr, unsigned char key){
 	return tempCounter;
 }
 
+/* Function:   encryptByte
+    Purpose:   Takes in a plaintext byte and returns the ciphertext byte
+         in:   pt represents the cipher text array
+         in:   ctr represents the current counter value
+	     in:   prev represents the previous ciphertext byte
+	 return:   the encrypted byte as an unsigned char
+*/
 unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char prev){
 	int tempByte = 0;
 
@@ -127,19 +135,13 @@ unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char pre
 	return tempByte;
 }
 
-void encode(unsigned char* pt, unsigned char* ct, int numBytes){
-    int i = 0; 
-    int counter = CTR;
-
-    do{
-		counter = processCtr(counter, KEY);
-        ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
-        printf("%u ", ct[i]);
-        counter++;
-        i++;
-    }while(pt[i+1] != '\0');
-}
-
+/* Function:   decryptByte
+    Purpose:   Takes in a ciphertext byte and returns the plaintext byte
+         in:   ct represents the cipher text array
+         in:   pt represents the plain text array
+	     in:   prev represents the previous ciphertext byte
+	 return:   the decrypted byte as an unsigned char
+*/
 unsigned char decryptByte(unsigned char ct, unsigned char ctr, unsigned char prev){
 	int tempByte = 0;
 
@@ -156,7 +158,33 @@ unsigned char decryptByte(unsigned char ct, unsigned char ctr, unsigned char pre
 	return tempByte;
 }
 
+/* Function:   encode
+    Purpose:   Makes use of processCtr & encryptByte to encrypt user input
+     in/out:   ct represents the cipher text array
+     in/out:   pt represents the plain text array
+	     in:   numBytes is the amount of bytes the user has entered
+	 return:   void
+*/
+void encode(unsigned char* pt, unsigned char* ct, int numBytes){
+    int i = 0; 
+    int counter = CTR;
 
+    do{
+		counter = processCtr(counter, KEY);
+        ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
+        printf("%u ", ct[i]);
+        counter++;
+        i++;
+    }while(pt[i+1] != '\0');
+}
+
+/* Function:  decode
+    Purpose:   Makes use of processCtr & decryptByte to decrypt user input
+     in/out:   ct represents the cipher text array
+     in/out:   pt represents the plain text array
+	     in:   numBytes is the amount of bytes the user has entered
+	 return:   void
+*/
 void decode(unsigned char *ct, unsigned char *pt, int numBytes){
 	int i = 0; 
     int counter = CTR;

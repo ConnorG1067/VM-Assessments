@@ -129,10 +129,10 @@ unsigned char encryptByte(unsigned char pt, unsigned char ctr, unsigned char pre
 
 void encode(unsigned char* pt, unsigned char* ct, int numBytes){
     int i = 0; 
-    int counter; 
+    int counter = CTR;
 
     do{
-		counter = processCtr((i==0) ? CTR : counter, KEY);
+		counter = processCtr(counter, KEY);
         ct[i] = encryptByte(pt[i], counter, (i == 0) ? IV : ct[i-1]);
         printf("%u ", ct[i]);
         counter++;

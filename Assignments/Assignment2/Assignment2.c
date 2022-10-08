@@ -24,7 +24,7 @@ int main()
   int  choice;
 	
   //Creating two message arrays with a size of MAX_BUF
-  unsigned char encryptMsg[MAX_BUF];
+  unsigned char plainMsg[MAX_BUF];
   unsigned char cipherMsg[MAX_BUF];
 
   //Prompting the user
@@ -44,15 +44,16 @@ int main()
   switch (choice) {
     case 1:
 	  //If the user chooses to encrypt
-	  fgets(encryptMsg, sizeof(encryptMsg), stdin);
-      encode(encryptMsg, cipherMsg, sizeof(encryptMsg));
+	  fgets(plainMsg, sizeof(plainMsg), stdin);
+      encode(plainMsg, cipherMsg, sizeof(plainMsg));
 	
 	  //Prints the cipher text
 	  int i = 0;
+      printf("  Encrypted Message:  \n");
 	  do{
 		printf("%u ", cipherMsg[i]);
 		i++;
-	  }while(encryptMsg[i+1] != '\0');
+	  }while(plainMsg[i+1] != '\0');
 
       break;
     case 2:
@@ -74,17 +75,19 @@ int main()
 		cipherMsg[arrayCounter++] = currentValue; 	
 	  }
 	  //Decode the users cipherMsg
-      decode(cipherMsg, encryptMsg, arrayCounter);
+      decode(cipherMsg, plainMsg, arrayCounter);
 	  
 	  //Prints the plain text
+      printf("\n  Decrypted Message:\n  ");
 	  for(int i = 0; i<arrayCounter; i++){
-		printf("%c ",encryptMsg[i]);
+		printf("%c", plainMsg[i]);
 	  }
 	  
 
       break;
   }
 
+  printf("\n");
   return(0);
 }
 

@@ -1,22 +1,26 @@
 #include <stdio.h>
 #include <string.h>
 
+//CONSTANTS
 #define MAX_BUF  256
 
+//Encryption Constants
 #define IV  0b10110001
 #define KEY 0b11001011
 #define CTR 0b00110101
 
+
+//Function declarations
 void encode(unsigned char*, unsigned char*, int);
 void decode(unsigned char*, unsigned char*, int);
+void printArray(unsigned char*, unsigned char*, int, int);
 
 unsigned char processCtr(unsigned char, unsigned char);
 unsigned char encryptByte(unsigned char, unsigned char, unsigned char);
 unsigned char decryptByte(unsigned char, unsigned char, unsigned char);
 
 unsigned char getBit(unsigned char, int);
-unsigned char setBit(unsigned char, int);
-unsigned char clearBit(unsigned char, int);
+unsigned char setBit(unsigned char, int); unsigned char clearBit(unsigned char,int);
 
 int main()
 {
@@ -44,17 +48,12 @@ int main()
   switch (choice) {
     case 1:
 	  //If the user chooses to encrypt
+      printf("  ");
 	  fgets(plainMsg, sizeof(plainMsg), stdin);
       encode(plainMsg, cipherMsg, sizeof(plainMsg));
 	
 	  //Prints the cipher text
-	  int i = 0;
-      printf("  Encrypted Message:  \n");
-	  do{
-		printf("%u ", cipherMsg[i]);
-		i++;
-	  }while(plainMsg[i+1] != '\0');
-
+	  printArray(cipherMsg, plainMsg, -1, choice); 
       break;
     case 2:
 	  //If the user chooses to decrypt
@@ -63,7 +62,7 @@ int main()
 	  //Counter for the values in the array
 	  int arrayCounter = 0;
 	  //The variable for the current user input
-	  unsigned currentValue;
+	  unsigned int currentValue;
 
 	  //Scan for user input until currentValue is -1
 	  while(1){
@@ -76,13 +75,9 @@ int main()
 	  }
 	  //Decode the users cipherMsg
       decode(cipherMsg, plainMsg, arrayCounter);
-	  
-	  //Prints the plain text
-      printf("\n  Decrypted Message:\n  ");
-	  for(int i = 0; i<arrayCounter; i++){
-		printf("%c", plainMsg[i]);
-	  }
-	  
+     
+      //Prints the plain text
+	  printArray(cipherMsg, plainMsg, arrayCounter, choice);
 
       break;
   }
@@ -91,7 +86,35 @@ int main()
   return(0);
 }
 
-
+/* Function:   printArray
+    Purpose:   prints the array
+         in:   cipherMsgArray is the cipherMsg
+         in:   plainMsgArray is the plainMsg
+         in:   Size of the plainMsgArray
+         in:   The current choice of the user
+     return:   a void which prints the values of the array depending on the choice
+*/
+void printArray(unsigned char* cipherMsgArray, unsigned char* plainMsgArray, int size, int choice){
+    switch(choice){
+        case 1:
+            //prints the cipher text
+            int i = 0;
+            printf("  Encrypted Message:  \n  ");
+	        do{
+	        	printf("%u ", cipherMsgArray[i]);
+		        i++;
+	        }while(plainMsgArray[i] != '\0');
+            printf("-1");
+            break;
+        case 2:
+            //Prints the plain text
+            printf("\n  Decrypted Message:\n  ");
+	        for(int i = 0; i<size; i++){
+		        printf("%c", plainMsgArray[i]);
+	        }
+            break;
+    }
+}
 
 
 /* Function:   getBit

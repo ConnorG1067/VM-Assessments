@@ -14,24 +14,14 @@ void growNotebook(NotebookType* arr){
 	for(int i = 0; i<arr->size; i++){
 		copyEvidence(newNotebook->elements, arr->elements);
 	}
-
-    /*
-    printf("YOi\n");
-
-	arr->capacity*=2;
-
-    printf("IN IF CAPACITY: %d\n", arr->capacity);
-	arr = calloc(arr->capacity,sizeof(NotebookType));
-    
-    printf("3nd YO!\n");
-    */
-
+   //TODO FREE
 }
 
 void printNotebook(NotebookType* arr){
-    printf("%d\n", arr->size);
+	printf("  ID |%16s Room |   Device |%10s Value |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
-		printf("%s %d\n", arr->elements[i].room, i);
+	   printf("%d | %20s |   Device |%10s Value |  Timestamp\n", arr->elements[i].id, arr->elements[i].room," ");
+    
 	}
 }
 

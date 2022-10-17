@@ -67,9 +67,20 @@ void initStuArray(StudentArray *stuArray) {
 /*        out:  Modified StudentArray                       */
 /*    Purpose:  double the size of stuArray->arr            */
 void growArray(StudentArray* stuArray) {
+  StudentType** tempStuArray = calloc(stuArray->capacity*2, sizeof(StudentType));
   stuArray->capacity*=2;
-  stuArray = calloc(stuArray->capacity*2, sizeof(StudentArray));
+  for(int i = 0; i<stuArray->count; i++){
+    tempStuArray[i] = stuArray->arr[i];
+  }
+  free(stuArray->arr);
+  stuArray->arr = tempStuArray;
+
+
+  /*
+  stuArray->capacity*=2;
+  stuArray->arr = calloc(stuArray->capacity, sizeof(StudentArray));
   free(stuArray);
+  */
 }
 
 /*   Function:  addStudent                                  */

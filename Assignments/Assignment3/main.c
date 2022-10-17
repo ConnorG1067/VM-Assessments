@@ -8,12 +8,17 @@ int main(void)
   int choice = 0;
   printMenu(&choice);
 
+  NotebookType* mainBook = (NotebookType *) calloc(1, sizeof(NotebookType));
+
+  initNotebook(mainBook, 2);
+  loadEvidenceData(mainBook);
   switch(choice){
     case 1:
 	  break;
 	case 2:
 	  break;
 	case 3:
+      printNotebook(mainBook);
 	  break;
   }
 

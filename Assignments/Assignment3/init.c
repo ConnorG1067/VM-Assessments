@@ -1,8 +1,8 @@
 #include "defs.h"
 
-
 void loadEvidenceData(NotebookType *arr)
 {
+
   EvidenceType a;
   // Add sample evidence data
   // Evidence has an ID, room location, type (EMF/THERMAL/SOUND), value, and timestamp in seconds
@@ -13,6 +13,8 @@ void loadEvidenceData(NotebookType *arr)
   initEvidence(1002, "Nursery", "SOUND", 88.8, 4120, &a);
   addEvidence(arr, &a);
   initEvidence(1003, "Living Room", "EMF", 4.9, 17157, &a);
+
+  //fucks up here
   addEvidence(arr, &a);
   initEvidence(1004, "Living Room", "SOUND", 35.154, 20970, &a);
   addEvidence(arr, &a);
@@ -55,12 +57,9 @@ void loadEvidenceData(NotebookType *arr)
 
 //Inits every field of the arr parameter to default values
 void initNotebook(NotebookType *arr, int cap){
-	for(int i = 0; i<cap; i++){
-		EvidenceType defaultEvidenceArray;
-		defaultEvidenceArray->capacity = cap;
-		defaultEvidenceArray->size = 0;
-		arr[i] = defaultEvidenceArray; 
-	}
+	arr->capacity = cap;
+	arr->size = 0;
+    arr->elements = calloc(cap, sizeof(EvidenceType));
 }
 
 //Inits every field of the given EvidenceType structure using the given parameters

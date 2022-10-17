@@ -54,11 +54,12 @@ void loadEvidenceData(NotebookType *arr)
 }
 
 //Inits every field of the arr parameter to default values
-
 void initNotebook(NotebookType *arr, int cap){
 	for(int i = 0; i<cap; i++){
-		NotebookType defaultNotebook;
-		arr[i] = defaultNotebook; 
+		EvidenceType defaultEvidenceArray;
+		defaultEvidenceArray->capacity = cap;
+		defaultEvidenceArray->size = 0;
+		arr[i] = defaultEvidenceArray; 
 	}
 }
 

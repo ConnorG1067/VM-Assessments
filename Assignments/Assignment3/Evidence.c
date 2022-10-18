@@ -18,9 +18,9 @@ void growNotebook(NotebookType* arr){
 }
 
 void printNotebook(NotebookType* arr){
-	printf("  ID |%16s Room |   Device |%10s Value |  Timestamp\n", " ", " ");
+	printf("  ID |%16s Room |   Device |%9s Value  |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
-	   printf("%d | %20s |   Device |%10s Value |  Timestamp\n", arr->elements[i].id, arr->elements[i].room," ");
+	   printf("%d | %20s | %8s |  %13f  |  %9d\n", arr->elements[i].id, arr->elements[i].room, arr->elements[i].device, arr->elements[i].value, arr->elements[i].timestamp);
     
 	}
 }
@@ -28,9 +28,6 @@ void printNotebook(NotebookType* arr){
 void addEvidence(NotebookType* arr, EvidenceType* ev){
     if(arr->size == arr->capacity){
         growNotebook(arr);
-
     }
-    arr->elements[arr->size++] = *ev;
-   
-    
+    arr->elements[arr->size++] = *ev; 
 }

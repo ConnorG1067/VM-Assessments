@@ -8,13 +8,15 @@ void copyEvidence(EvidenceType* newEv, EvidenceType* oldEv){
 }
 
 void growNotebook(NotebookType* arr){ 
-    arr->capacity *= 2;
-    NotebookType* newNotebook = (NotebookType *) calloc(1, sizeof(NotebookType));
-	initNotebook(newNotebook, arr->capacity);
+    NotebookType* newNotebook;
+	initNotebook(newNotebook, arr->capacity*2);
 	for(int i = 0; i<arr->size; i++){
 		copyEvidence(newNotebook->elements, arr->elements);
 	}
    //TODO FREE
+   free(arr->elements);
+   arr = newNotebook;
+   arr->capacity*=2;
 }
 
 void printNotebook(NotebookType* arr){

@@ -26,34 +26,49 @@ void printNotebook(NotebookType* arr){
 	}
 }
 
-//TODO Insert algorithm
+//TODO Insert algorithm, done BUT we need to get timestamps working yo
 void addEvidence(NotebookType* arr, EvidenceType* ev){
     if(arr->size == arr->capacity){
         growNotebook(arr);
     }
+
+	//Insertion
     switch(arr->size){
         case 0:
-            arr->elements[arr->size++] = *ev;
-            break;
+			//if the array is empty just add the evidence
+            arr->elements[arr->size] = *ev;
+			break;
         default:
+			//Otherwise check to see if the evidence belongs inbetween two existing evidences
+            for(int i = 1; i<=arr->size; i++){
+				//printf("%d %d %d\n",(int) arr->elements[i-1].room[0], (int) ev->room[0], (int) arr->elements[i].room[0]);
+				//If it does exist between two particlar elements
+				if((int) ev->room[0] <= arr->elements[i-1].room[0] && (int) ev->room[0] >= arr->elements[i].room[0]){	
+					//Shift the elements to make space for the new element
+					elementShifter(arr, i);
+					//Set the ith element to the evidence
+            		arr->elements[i] = *ev;
+					//Increase the size
+					arr->size++;
+					//Return becuase we do not want to finish the rest of the code
+					return;
+				}
+			}
 
-            for(int i = 0; i<arr->size; i++){
-                printf("%c %c ",ev->room[0], arr->elements[i].room[0]);
-                printf("%d ", ev->room[0]>=arr->elements[i].room[0]);
-
-                printf("%d\n", ev->room[0]<=arr->elements[i].room[0]);
-                if((int) ev->room[0] >= (int) arr->elements[i].room[0] && (int) ev->room[0] <=arr->elements[i+1].room[0]){
-                    elementShifter(arr, i+1);
-                    arr->elements[i+1] = *ev;
-                }
-             }
+			//If the element should not exist between elements, thus at the start of end, find the insert position
+			int insertPos = ((int) ev->room[0] >= arr->elements[0].room[0]) ? 0 : arr->size;
+			//Shift the elements in the array
+			elementShifter(arr, insertPos);
+			//Set the position of interest to the evidence
+			arr->elements[insertPos] = *ev;
             break;
     }
+	arr->size++;
+
 }
 
 int elementShifter(NotebookType* notebookArray, int shiftPos){
-    for(int i = notebookArray->size-1; i>shiftPos; i--){
+    for(int i = notebookArray->size-1; i>=shiftPos; i--){
         notebookArray->elements[i+1] = notebookArray->elements[i];
-        notebookArray->size++;
     }
 }

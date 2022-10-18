@@ -13,8 +13,6 @@ void loadEvidenceData(NotebookType *arr)
   initEvidence(1002, "Nursery", "SOUND", 88.8, 4120, &a);
   addEvidence(arr, &a);
   initEvidence(1003, "Living Room", "EMF", 4.9, 17157, &a);
-
-  //fucks up here
   addEvidence(arr, &a);
   initEvidence(1004, "Living Room", "SOUND", 35.154, 20970, &a);
   addEvidence(arr, &a);

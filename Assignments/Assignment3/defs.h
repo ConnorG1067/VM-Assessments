@@ -33,6 +33,7 @@ void addEvidence(NotebookType*, EvidenceType*);
 int  delEvidence(NotebookType*, int);
 void copyEvidence(EvidenceType*, EvidenceType*);
 void growNotebook(NotebookType*);
+int elementShifter(NotebookType*, int);
 
 void printNotebook(NotebookType*);
 void cleanupNotebook(NotebookType*);

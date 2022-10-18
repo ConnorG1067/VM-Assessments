@@ -8,17 +8,16 @@ void copyEvidence(EvidenceType* newEv, EvidenceType* oldEv){
 }
 
 void growNotebook(NotebookType* arr){ 
-    NotebookType* newNotebook;
+    NotebookType* newNotebook = calloc(1, sizeof(NotebookType));
 	initNotebook(newNotebook, arr->capacity*2);
 	for(int i = 0; i<arr->size; i++){
-		copyEvidence(newNotebook->elements, arr->elements);
+		copyEvidence(&newNotebook->elements[i], &arr->elements[i]);
 	}
-   //TODO FREE
    free(arr->elements);
-   arr = newNotebook;
+   arr->elements = newNotebook->elements;
    arr->capacity*=2;
 }
-
+//TODO Valgrind says we are losing bytes, fix this
 void printNotebook(NotebookType* arr){
 	printf("  ID |%16s Room |   Device |%9s Value  |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
@@ -27,9 +26,34 @@ void printNotebook(NotebookType* arr){
 	}
 }
 
+//TODO Insert algorithm
 void addEvidence(NotebookType* arr, EvidenceType* ev){
     if(arr->size == arr->capacity){
         growNotebook(arr);
     }
-    arr->elements[arr->size++] = *ev; 
+    switch(arr->size){
+        case 0:
+            arr->elements[arr->size++] = *ev;
+            break;
+        default:
+
+            for(int i = 0; i<arr->size; i++){
+                printf("%c %c ",ev->room[0], arr->elements[i].room[0]);
+                printf("%d ", ev->room[0]>=arr->elements[i].room[0]);
+
+                printf("%d\n", ev->room[0]<=arr->elements[i].room[0]);
+                if((int) ev->room[0] >= (int) arr->elements[i].room[0] && (int) ev->room[0] <=arr->elements[i+1].room[0]){
+                    elementShifter(arr, i+1);
+                    arr->elements[i+1] = *ev;
+                }
+             }
+            break;
+    }
+}
+
+int elementShifter(NotebookType* notebookArray, int shiftPos){
+    for(int i = notebookArray->size-1; i>shiftPos; i--){
+        notebookArray->elements[i+1] = notebookArray->elements[i];
+        notebookArray->size++;
+    }
 }

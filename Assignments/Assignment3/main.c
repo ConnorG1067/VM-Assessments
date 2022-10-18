@@ -21,7 +21,7 @@ int main(void)
       printNotebook(mainBook);
 	  break;
   }
-
+  free(mainBook);
   return(0);
 }
 

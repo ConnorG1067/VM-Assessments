@@ -7,7 +7,7 @@ int main(void)
 {
   int choice = 0;
 
-  NotebookType* mainBook = (NotebookType *) calloc(1, sizeof(NotebookType));
+  NotebookType* mainBook =  calloc(1, sizeof(NotebookType));
 
   initNotebook(mainBook, 2);
   loadEvidenceData(mainBook);
@@ -45,17 +45,13 @@ int main(void)
 
 			printf("Enter the timestamp (hours minutes seconds, space separated): ");
 			while(timestampSize<3){
-					scanf("%d", &timestamp[timestampSize++]);
+				scanf("%d", &timestamp[timestampSize++]);
 
 			}
 
-			char* device = deviceSelector(deviceNumber);
+			char device[7];
+			deviceSelector(device, deviceNumber);
 			int timestampAsSeconds = timestampToSeconds(timestamp);
-
-            printf("%d\n", id);
-            printf("%s\n", roomName);
-            printf("%s\n", device);
-            printf("%f\n", value);
 
             //Pretty horrible, ideally no loop
             for(int i = 0; i<30; i++){
@@ -67,7 +63,6 @@ int main(void)
 			EvidenceType tempEvidence;
 			initEvidence(id, roomName, device, value, timestampAsSeconds, &tempEvidence);
 			addEvidence(mainBook, &tempEvidence);
-
 			break;
 		case 2:
 
@@ -82,7 +77,7 @@ int main(void)
 
   	}
   }
-  free(mainBook);
+  cleanupNotebook(mainBook);
   return(0);
 }
 
@@ -93,8 +88,7 @@ int timestampToSeconds(int* timestampArray){
 
 
 //Converts choice to device name
-char* deviceSelector(int choice){
-	char* deviceString = calloc(7, sizeof(char));
+void deviceSelector(char* deviceString, int choice){
 	switch(choice){
 		case 1:
 			deviceString = "EMF";
@@ -106,7 +100,6 @@ char* deviceSelector(int choice){
 			deviceString = "SOUND";
 			break;
 	}
-	return deviceString;
 }
 
 void printMenu(int *choice)

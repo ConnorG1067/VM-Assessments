@@ -29,7 +29,7 @@ void loadEvidenceData(NotebookType*);
 void initNotebook(NotebookType*, int);
 void initEvidence(int, char*, char*, float, int, EvidenceType*);
 
-char* deviceSelector(int);
+void deviceSelector(char*, int);
 int timestampToSeconds(int*);
 
 void addEvidence(NotebookType*, EvidenceType*);
@@ -37,10 +37,10 @@ int  delEvidence(NotebookType*, int);
 void copyEvidence(EvidenceType*, EvidenceType*);
 void growNotebook(NotebookType*);
 int elementShifter(NotebookType*, int);
-int* containsRoom(NotebookType*, EvidenceType*);
 void formatEvidence(EvidenceType*, char*);
 void convertSecondsToTime(int, char*);
-
+int shiftAndAdd(NotebookType*, EvidenceType*, int);
+int checkTimestamp(NotebookType*, EvidenceType*, int);
 void printNotebook(NotebookType*);
 void cleanupNotebook(NotebookType*);
 

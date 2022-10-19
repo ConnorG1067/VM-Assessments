@@ -14,17 +14,17 @@ void copyEvidence(EvidenceType* newEv, EvidenceType* oldEv){
 }
 
 void growNotebook(NotebookType* arr){ 
-    NotebookType* newNotebook = calloc(1, sizeof(NotebookType));
+    NotebookType* newNotebook = (NotebookType*) calloc(1, sizeof(NotebookType));
 	initNotebook(newNotebook, arr->capacity*2);
 	for(int i = 0; i<arr->size; i++){
 		copyEvidence(&newNotebook->elements[i], &arr->elements[i]);
 	}
-   free(arr->elements);
-   arr->elements = newNotebook->elements;
-   arr->capacity*=2;
+    free(arr->elements);
+    arr->elements = newNotebook->elements;
+    free(newNotebook);
+    arr->capacity*=2;
 }
 
-//TODO Valgrind says we are losing bytes, fix this
 void printNotebook(NotebookType* arr){
 	printf("  ID |%16s Room |   Device |%8s Value  |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
@@ -35,83 +35,64 @@ void printNotebook(NotebookType* arr){
 	}
 }
 
-//TODO Insert algorithm clean up it looks fucking disgusting
+
 void addEvidence(NotebookType* arr, EvidenceType* ev){
+	//Grow the array size if the size is equal to the capacity
     if(arr->size == arr->capacity){
         growNotebook(arr);
     }
-	//Insertion
-    switch(arr->size){
-        case 0:
-			//if the array is empty just add the evidence
-            arr->elements[arr->size] = *ev;
-			break;
-        default:
-			//Otherwise check to see if the evidence belongs inbetween two existing evidences
-            for(int i = 1; i<=arr->size; i++){
-				//If I find an instance of my room
-				if((int) ev->room[0] == arr->elements[i-1].room[0]){
-					//CHECK IF FIRST TIME STAMP IS < FIRST INSTANCE TIMESTAMP
-					if(ev->timestamp <= arr->elements[i-1].timestamp){
-						elementShifter(arr, i-1);
-						//Set the ith element to the evidence
-            			arr->elements[i-1] = *ev;
-						//Increase the size
-						arr->size++;
-						//Return becuase we do not want to finish the rest of the code
-						return;
-					}
-					//LOOP THROUGH ALL INSTANCES
-					int indexCounter = i;
-				    while((int) ev->room[0] == arr->elements[indexCounter].room[0]){
-						//CHECK IF IT BELONGS INBETWEEN ANY INSTACES
-						if(ev->timestamp >= arr->elements[indexCounter-1].timestamp && ev->timestamp <= arr->elements[indexCounter].timestamp){
-							//Shift the elements to make space for the new element
-							elementShifter(arr, indexCounter);
-							//Set the ith element to the evidence
-            				arr->elements[indexCounter] = *ev;
-							//Increase the size
-							arr->size++;
-							//Return becuase we do not want to finish the rest of the code
-							return;
-						}
-						indexCounter++;
-					}
-					//IF ALL FAILS PLUG IT IN AT THE END!!!!!!!
-					elementShifter(arr, indexCounter);
-					//Set the ith element to the evidence
-            		arr->elements[indexCounter] = *ev;
-					//Increase the size
-					arr->size++;
-					//Return becuase we do not want to finish the rest of the code
-					return;
-				
-				}
+      
+	//Loop through the array, starting at i = 1 so we can look at the previous element
+	for(int i = 1; i<=arr->size; i++){
+		//If the checkTimestamp function returns 0, that means we have added to the array and therefore, we can return
+		if(checkTimestamp(arr, ev, i) == 0){
+			return;
+		}
 
-				//If it does exist between two particlar elements
-				if((int) ev->room[0] < arr->elements[i-1].room[0] && (int) ev->room[0] > arr->elements[i].room[0]){
-					//Shift the elements to make space for the new element
-					elementShifter(arr, i);
-					//Set the ith element to the evidence
-            		arr->elements[i] = *ev;
-					//Increase the size
-					arr->size++;
-					//Return becuase we do not want to finish the rest of the code
-					return;
-				}		
+		//Check to see if the room is less than the current and greater than the adjancent current but not equal
+		//In other words, if we find a unique room name and it can be put between two distinct room names, do so.
+		if((strcmp(ev->room,arr->elements[i-1].room)<0) && (strcmp(ev->room,  arr->elements[i].room)>0)){
+			shiftAndAdd(arr, ev, i);
+			return;
+		}		
+	}
+
+	//If the room name does not fit in the middle, then it must go at the start or the end
+	int insertPos = (strcmp(ev->room, arr->elements[0].room) > 0) ? 0 : arr->size;
+	shiftAndAdd(arr, ev, insertPos);
+	
+}
+
+int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
+	if(strcmp(ev->room,arr->elements[i-1].room) == 0){
+		//Add at the beginning, hence i-1
+		if(ev->timestamp <= arr->elements[i-1].timestamp){
+			shiftAndAdd(arr, ev, i-1);	
+			return 0;
+		}
+
+		//Loop while the current room is equal to the evidence room
+		int indexCounter = i;
+		while(strcmp(ev->room, arr->elements[indexCounter].room) == 0){
+			//If at any point the room timestamp fits between shiftAndAdd then return
+			if(ev->timestamp >= arr->elements[indexCounter-1].timestamp && ev->timestamp <= arr->elements[indexCounter].timestamp){
+				shiftAndAdd(arr, ev, indexCounter);	
+				return 0;
 			}
+			indexCounter++;
+		}
+		//If we are equal with the room but it does not go in the start or middle, it must go at the end
+		shiftAndAdd(arr, ev, indexCounter);	
+		return 0;
+	}
+	return -1;
+}
 
-			//If the element should not exist between elements, thus at the start of end, find the insert position
-			int insertPos = ((int) ev->room[0] > arr->elements[0].room[0]) ? 0 : arr->size;
-			//Shift the elements in the array
-			elementShifter(arr, insertPos);
-			//Set the position of interest to the evidence
-			arr->elements[insertPos] = *ev;
-            break;
-    }
+int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
+	elementShifter(arr, index);
+	arr->elements[index] = *ev;
 	arr->size++;
-
-
+	return 0;
 }
 
 void formatEvidence(EvidenceType* evidence, char* stringBuilder){
@@ -120,15 +101,15 @@ void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	if(strcmp(evidence->device, "EMF") == 0){
 		char emfStr[50] = "";
 		sprintf(emfStr, "%.1f%s", evidence->value, (evidence->value>4) ? " (HIGH) |" : " |");
-		sprintf(stringBuilder + strlen(stringBuilder), "  %15s", emfStr);	
+		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", emfStr);	
 	}else if(strcmp(evidence->device, "THERMAL") == 0){
 		char thermalStr[50] = "";
 		sprintf(thermalStr, "%.2f%s", evidence->value, (evidence->value<0.0) ? " (COLD) |" : " |");
-		sprintf(stringBuilder + strlen(stringBuilder), "  %15s", thermalStr);	
+		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", thermalStr);	
 	}else{
 		char soundStr[50] = "";
 		sprintf(soundStr, "%.1f%s", evidence->value, (evidence->value<35.0) ? " (WHISPER) |" : (evidence->value>70.0) ? " (SCREEM) |" : "  |");
-		sprintf(stringBuilder + strlen(stringBuilder), "  %15s", soundStr);
+		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", soundStr);
 	}
 	char time[10] = "";
 	convertSecondsToTime(evidence->timestamp,time);
@@ -150,5 +131,6 @@ int elementShifter(NotebookType* notebookArray, int shiftPos){
 }
 
 void cleanupNotebook(NotebookType* arr){
+	free(arr->elements);
 
 }

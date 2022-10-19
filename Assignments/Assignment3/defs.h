@@ -34,6 +34,7 @@ int  delEvidence(NotebookType*, int);
 void copyEvidence(EvidenceType*, EvidenceType*);
 void growNotebook(NotebookType*);
 int elementShifter(NotebookType*, int);
+int* containsRoom(NotebookType*, EvidenceType*);
 void formatEvidence(EvidenceType*, char*);
 void convertSecondsToTime(int, char*);
 

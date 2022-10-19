@@ -41,7 +41,6 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
     if(arr->size == arr->capacity){
         growNotebook(arr);
     }
-
 	//Insertion
     switch(arr->size){
         case 0:
@@ -51,9 +50,47 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
         default:
 			//Otherwise check to see if the evidence belongs inbetween two existing evidences
             for(int i = 1; i<=arr->size; i++){
-				//printf("%d %d %d\n",(int) arr->elements[i-1].room[0], (int) ev->room[0], (int) arr->elements[i].room[0]);
+				//If I find an instance of my room
+				if((int) ev->room[0] == arr->elements[i-1].room[0]){
+					//CHECK IF FIRST TIME STAMP IS < FIRST INSTANCE TIMESTAMP
+					if(ev->timestamp <= arr->elements[i-1].timestamp){
+						elementShifter(arr, i-1);
+						//Set the ith element to the evidence
+            			arr->elements[i-1] = *ev;
+						//Increase the size
+						arr->size++;
+						//Return becuase we do not want to finish the rest of the code
+						return;
+					}
+					//LOOP THROUGH ALL INSTANCES
+					int indexCounter = i;
+				    while((int) ev->room[0] == arr->elements[indexCounter].room[0]){
+						//CHECK IF IT BELONGS INBETWEEN ANY INSTACES
+						if(ev->timestamp >= arr->elements[indexCounter-1].timestamp && ev->timestamp <= arr->elements[indexCounter].timestamp){
+							//Shift the elements to make space for the new element
+							elementShifter(arr, indexCounter);
+							//Set the ith element to the evidence
+            				arr->elements[indexCounter] = *ev;
+							//Increase the size
+							arr->size++;
+							//Return becuase we do not want to finish the rest of the code
+							return;
+						}
+						indexCounter++;
+					}
+					//IF ALL FAILS PLUG IT IN AT THE END!!!!!!!
+					elementShifter(arr, indexCounter);
+					//Set the ith element to the evidence
+            		arr->elements[indexCounter] = *ev;
+					//Increase the size
+					arr->size++;
+					//Return becuase we do not want to finish the rest of the code
+					return;
+				
+				}
+
 				//If it does exist between two particlar elements
-				if((int) ev->room[0] <= arr->elements[i-1].room[0] && (int) ev->room[0] >= arr->elements[i].room[0]){	
+				if((int) ev->room[0] < arr->elements[i-1].room[0] && (int) ev->room[0] > arr->elements[i].room[0]){
 					//Shift the elements to make space for the new element
 					elementShifter(arr, i);
 					//Set the ith element to the evidence
@@ -62,11 +99,11 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
 					arr->size++;
 					//Return becuase we do not want to finish the rest of the code
 					return;
-				}
+				}		
 			}
 
 			//If the element should not exist between elements, thus at the start of end, find the insert position
-			int insertPos = ((int) ev->room[0] >= arr->elements[0].room[0]) ? 0 : arr->size;
+			int insertPos = ((int) ev->room[0] > arr->elements[0].room[0]) ? 0 : arr->size;
 			//Shift the elements in the array
 			elementShifter(arr, insertPos);
 			//Set the position of interest to the evidence
@@ -75,7 +112,10 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
     }
 	arr->size++;
 
+
 }
+
+
 
 void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	//Build a string	

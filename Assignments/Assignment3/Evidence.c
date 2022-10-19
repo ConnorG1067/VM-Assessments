@@ -35,8 +35,7 @@ void printNotebook(NotebookType* arr){
 	}
 }
 
-//TODO Insert algorithm, done BUT we need to get timestamps working yo
-//Abstract some stuff, pretty hectic
+//TODO Insert algorithm clean up it looks fucking disgusting
 void addEvidence(NotebookType* arr, EvidenceType* ev){
     if(arr->size == arr->capacity){
         growNotebook(arr);
@@ -114,8 +113,6 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
 
 
 }
-
-
 
 void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	//Build a string	

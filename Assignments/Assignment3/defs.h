@@ -29,6 +29,9 @@ void loadEvidenceData(NotebookType*);
 void initNotebook(NotebookType*, int);
 void initEvidence(int, char*, char*, float, int, EvidenceType*);
 
+char* deviceSelector(int);
+int timestampToSeconds(int*);
+
 void addEvidence(NotebookType*, EvidenceType*);
 int  delEvidence(NotebookType*, int);
 void copyEvidence(EvidenceType*, EvidenceType*);

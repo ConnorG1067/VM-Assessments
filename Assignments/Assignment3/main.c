@@ -52,7 +52,17 @@ int main(void)
 			char* device = deviceSelector(deviceNumber);
 			int timestampAsSeconds = timestampToSeconds(timestamp);
 
+            printf("%d\n", id);
+            printf("%s\n", roomName);
+            printf("%s\n", device);
+            printf("%f\n", value);
 
+            //Pretty horrible, ideally no loop
+            for(int i = 0; i<30; i++){
+                if(roomName[i] == '\n'){
+                    roomName[i] = '\0';
+                }
+            }
 
 			EvidenceType tempEvidence;
 			initEvidence(id, roomName, device, value, timestampAsSeconds, &tempEvidence);

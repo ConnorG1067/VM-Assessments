@@ -31,6 +31,7 @@ int main(void)
 			printf("Enter a room name: "); 
 			scanf(" ");
 			fgets(roomName, sizeof(roomName), stdin);
+			roomName[strcspn(roomName, "\n")] = '\0';
 
 			//device number
 			printf("Enter the device code [EMF: 1, THERMAL: 2, SOUND: 3]: ");
@@ -46,38 +47,35 @@ int main(void)
 			printf("Enter the timestamp (hours minutes seconds, space separated): ");
 			while(timestampSize<3){
 				scanf("%d", &timestamp[timestampSize++]);
-
 			}
 
-			char device[7];
+			char* device = calloc(8, sizeof(char));
 			deviceSelector(device, deviceNumber);
+			
 			int timestampAsSeconds = timestampToSeconds(timestamp);
-
-            //Pretty horrible, ideally no loop
-            for(int i = 0; i<30; i++){
-                if(roomName[i] == '\n'){
-                    roomName[i] = '\0';
-                }
-            }
 
 			EvidenceType tempEvidence;
 			initEvidence(id, roomName, device, value, timestampAsSeconds, &tempEvidence);
+			free(device);
 			addEvidence(mainBook, &tempEvidence);
 			break;
 		case 2:
+			int desiredId;
+			printf("Enter the id you'd like to delete: ");
+			scanf("%d", &desiredId);
 
-
+			delEvidence(mainBook, desiredId);	
 			break;
 		case 3:
 			printNotebook(mainBook);
 			break;
 		case 0:
+  			cleanupNotebook(mainBook);
 			return 0;
 
 
   	}
   }
-  cleanupNotebook(mainBook);
   return(0);
 }
 
@@ -91,13 +89,13 @@ int timestampToSeconds(int* timestampArray){
 void deviceSelector(char* deviceString, int choice){
 	switch(choice){
 		case 1:
-			deviceString = "EMF";
+			strcpy(deviceString, "EMF");
 			break;
 		case 2:
-			deviceString = "THERMAL";
+			strcpy(deviceString, "THERMAL");
 			break;
 		case 3:
-			deviceString = "SOUND";
+			strcpy(deviceString, "SOUND");
 			break;
 	}
 }

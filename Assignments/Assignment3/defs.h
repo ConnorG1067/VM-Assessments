@@ -34,6 +34,7 @@ int timestampToSeconds(int*);
 
 void addEvidence(NotebookType*, EvidenceType*);
 int  delEvidence(NotebookType*, int);
+int  isFound(NotebookType*, int);
 void copyEvidence(EvidenceType*, EvidenceType*);
 void growNotebook(NotebookType*);
 int elementShifter(NotebookType*, int);

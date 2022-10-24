@@ -2,17 +2,22 @@
 #include "defs.h"
 #include <stdlib.h>
 #include <math.h>
-//TODO
-//1. SORT BY TIMESTAMP IF THE SAME NAME!
-//2. BREAK UP INSERT ALGORITHM
-//3. CLEAN UP FUNCTION
-//4. ADD/DEL functionality
 
-
+/***********************************************************************************************
+ * Used to copy old evidence data to new evidence data
+ * newEv is an in/out parameter which takes in the old data from the other parameter oldEv
+ * oldEv is an in parameter which supplies the newEv with data
+ * Return a void
+************************************************************************************************/
 void copyEvidence(EvidenceType* newEv, EvidenceType* oldEv){
 	initEvidence(oldEv->id, oldEv->room, oldEv->device, oldEv->value, oldEv->timestamp, newEv);
 }
 
+/***********************************************************************************************
+ * Used to grow the notebooks capacity
+ * out parameter: arr is the notebook who's capcity will grow
+ * Return a void
+************************************************************************************************/
 void growNotebook(NotebookType* arr){ 
     NotebookType* newNotebook = (NotebookType*) calloc(1, sizeof(NotebookType));
 	initNotebook(newNotebook, arr->capacity*2);
@@ -25,8 +30,13 @@ void growNotebook(NotebookType* arr){
     arr->capacity*=2;
 }
 
+/***********************************************************************************************
+ * Prints the notebook for the user
+ * arr is an in paramter and is used to print the information the notebook holds
+ * Return a void
+************************************************************************************************/
 void printNotebook(NotebookType* arr){
-	printf("  ID |%16s Room |   Device |%8s Value  |  Timestamp\n", " ", " ");
+	printf("  ID |%16s Room |   Device |%11s Value  |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
 	    char formattedStr[100] = "";
 		formatEvidence(&arr->elements[i], formattedStr);
@@ -35,7 +45,12 @@ void printNotebook(NotebookType* arr){
 	}
 }
 
-
+/***********************************************************************************************
+ * Adds evidence to the notebook first based on lexicographical order, then by timestamp
+ * arr: in/out parameter, adds the given ev to itself
+ * ev:  in parammeter, adds itself to the given arr
+ * Return a void
+************************************************************************************************/
 void addEvidence(NotebookType* arr, EvidenceType* ev){
 	//Grow the array size if the size is equal to the capacity
     if(arr->size == arr->capacity){
@@ -63,6 +78,12 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
 	
 }
 
+/***********************************************************************************************
+ * Helper Function: If the room name already exists search for the timestamp within given rooms
+ * arr: in/out parameter, used to determine information about the array and to modify the array
+ * ev:  in parammeter, the given evidence to add
+ * Return an int which determines the success of the operation
+************************************************************************************************/
 int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
 	if(strcmp(ev->room,arr->elements[i-1].room) == 0){
 		//Add at the beginning, hence i-1
@@ -88,6 +109,13 @@ int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
 	return -1;
 }
 
+/***********************************************************************************************************
+ * Helper Function: calls the elementShifter to shift elements, then adds the ev to arr at position index
+ * arr: out parameter, the array from which the elements are shifted and added
+ * ev:  in parammeter, the given evidence to add 
+ * index: in parameter, the index at which the evidence ev belongs
+ * Return an int which determines the success of the operation
+************************************************************************************************************/
 int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
 	elementShifter(arr, index);
 	arr->elements[index] = *ev;
@@ -95,6 +123,12 @@ int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
 	return 0;
 }
 
+/*****************************************************************************************************
+ * Helper Function: Formats the evidence, such that, printNotebook can print the content properly
+ * evidence: in parameter, takes evidence information such that the formatting remains correct
+ * stringBuilder: out parameter, the char array in which the formatted evidence is written to
+ * Returns a void
+******************************************************************************************************/
 void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	//Build a string	
 	sprintf(stringBuilder, "%d | %20s | %8s |", evidence->id, evidence->room, evidence->device);
@@ -116,6 +150,12 @@ void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	sprintf(stringBuilder + strlen(stringBuilder), "%10s", time);
 }
 
+/***********************************************************************************************
+ * Helper Function: converts given seconds to a HH:MM:SS format
+ * seconds: in parameter, gives the provided seconds to calculate a time
+ * time:  out parammeter, a char array to return the given time in a HH:MM:SS format
+ * Returns a void
+************************************************************************************************/
 void convertSecondsToTime(int seconds, char* time){
 	int exclusiveHours = seconds/3600;
 	int exclusiveMinutes = (seconds % 3600)/60;
@@ -123,14 +163,58 @@ void convertSecondsToTime(int seconds, char* time){
 	sprintf(time, "%s%d:%s%d:%s%d", (exclusiveHours<10) ? "0" : ""  ,exclusiveHours, (exclusiveMinutes<10) ? "0" : "", exclusiveMinutes, (exclusiveSeconds<10) ? "0" : "", exclusiveSeconds);
 }
 
-
+/***********************************************************************************************
+ * Helper Function: Shifts elements to the end of an array starting at shiftPos
+ * notebookArray: in/out parameter, is the array in which elements are shifted
+ * shiftPos: in parameter, is the starting index of the elements that are shifted
+ * Returns an int to determine success
+************************************************************************************************/
 int elementShifter(NotebookType* notebookArray, int shiftPos){
     for(int i = notebookArray->size-1; i>=shiftPos; i--){
-        notebookArray->elements[i+1] = notebookArray->elements[i];
+		copyEvidence(&notebookArray->elements[i+1], &notebookArray->elements[i]);
     }
 }
 
+/*************************************************************************************************************
+ * Helper Function: searches through the array for an id, if found return the index otherwise return an error
+ * arr: in parameter, used to check each element's id from the array
+ * id:  in parammeter, a desired id to delete from the array
+ * Returns the index of the position or an error code
+*************************************************************************************************************/
+int foundId(NotebookType* arr, int id){
+	//Find the evidence with the given id, if not found return error flag (predefined constant)
+	for(int i = 0; i<arr->size; i++){
+		if(arr->elements[i].id == id){
+			return i;
+		}
+	}
+	return -1;
+}
+
+/***********************************************************************************************
+ * deletes evidence from the notebook
+ * arr: in/out parameter, the array from which the element is being deleted
+ * id: in parameter, used to determine the position of the id in the array
+ * Returns an int to indicate success
+************************************************************************************************/
+int delEvidence(NotebookType* arr, int id){
+	int idPosition = foundId(arr, id);
+	if(idPosition > -1){
+		for(int i = idPosition; i<arr->size; i++){
+			copyEvidence(&arr->elements[i], &arr->elements[i+1]);
+    	}
+		arr->size--;
+		return 0;
+	}
+	return -1;
+}
+
+/***********************************************************************************************
+ * free's all allocated memory from the notebook
+ * arr: the array that has allocated memory
+ * Returns a void
+************************************************************************************************/
 void cleanupNotebook(NotebookType* arr){
 	free(arr->elements);
-
+	free(arr);
 }

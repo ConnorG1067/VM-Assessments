@@ -41,9 +41,8 @@ int main(void)
 			printf("Enter the value: ");
 			scanf("%f", &value);
 
-			//Value
+			//Time stamp
 			int timestampSize = 0;
-
 			printf("Enter the timestamp (hours minutes seconds, space separated): ");
 			while(timestampSize<3){
 				scanf("%d", &timestamp[timestampSize++]);
@@ -79,13 +78,22 @@ int main(void)
   return(0);
 }
 
-//Convert timestamp to seconds
+/***************************************************************************************************************
+ * Helper Function: converts the given timestamp to seconds
+ * timestampArray: in parameter, consisting of 3 integer values which represent the hours, minutes and seconds
+ * Returns an integer of the seconds
+****************************************************************************************************************/
 int timestampToSeconds(int* timestampArray){
 	return (timestampArray[0]*3600) + (timestampArray[1]*60) + (timestampArray[2]);
 }
 
 
-//Converts choice to device name
+/***************************************************************************************************************
+ * Helper Function: copys the value associated with the choice to the char array
+ * deviceString: out parameter, consists of the characters of the type of device
+ * choice: in parameter which dictates the device based on an integer value
+ * Returns a void
+****************************************************************************************************************/
 void deviceSelector(char* deviceString, int choice){
 	switch(choice){
 		case 1:
@@ -99,7 +107,11 @@ void deviceSelector(char* deviceString, int choice){
 			break;
 	}
 }
-
+/***************************************************************************************************************
+ * Prints a menu for the user
+ * choice: in/out parameter, stores the choice the user picks
+ * Returns a void
+****************************************************************************************************************/
 void printMenu(int *choice)
 {
   int c = -1;

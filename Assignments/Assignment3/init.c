@@ -1,11 +1,14 @@
 #include "defs.h"
 
+/***************************************************************************************************
+ * loads evidence into the notebook
+ * arr: out parameter assigning values to the notebook
+ * Returns a void
+****************************************************************************************************/
 void loadEvidenceData(NotebookType *arr)
 {
 
   EvidenceType a;
-  // Add sample evidence data
-  // Evidence has an ID, room location, type (EMF/THERMAL/SOUND), value, and timestamp in seconds
   initEvidence(1000, "Living Room", "EMF", 4.869, 19554, &a);
   addEvidence(arr, &a);
   initEvidence(1001, "Nursery", "EMF", 2.08, 4260, &a);
@@ -53,14 +56,24 @@ void loadEvidenceData(NotebookType *arr)
 
 }
 
-//Inits every field of the arr parameter to default values
+/***************************************************************************************************
+ * Initalizes the notebook provided
+ * arr: out parameter assigning values to the arr structure
+ * cap: in parameter, used for defining the capacity of the given Notebook
+ * Returns a void
+****************************************************************************************************/
 void initNotebook(NotebookType *arr, int cap){
 	arr->capacity = cap;
 	arr->size = 0;
     arr->elements = calloc(cap, sizeof(EvidenceType));
 }
 
-//Inits every field of the given EvidenceType structure using the given parameters
+/***************************************************************************************************
+ * Initalizes evidence provided
+ * id, room, device, value & timestamp are all in parameters used for giving values to the evidence
+ * ev: out parameter, used as the evidence that needs to be initalized
+ * Returns a void
+****************************************************************************************************/
 void initEvidence(int id, char* room, char *device, float value, int timestamp, EvidenceType *ev){
 	ev->id = id;
 	strcpy(ev->room, room);

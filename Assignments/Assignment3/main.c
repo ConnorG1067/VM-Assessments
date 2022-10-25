@@ -17,7 +17,7 @@ int main(void)
     	case 1:
 	  		//getting user input
 	  		int id;
-	  		char roomName[30];
+	  		char roomName[MAX_STR];
 	  		int deviceNumber;
 			float value;
 			int timestamp[3];
@@ -70,12 +70,12 @@ int main(void)
 			break;
 		case 0:
   			cleanupNotebook(mainBook);
-			return 0;
+			return C_OK;
 
 
   	}
   }
-  return(0);
+  return C_OK;
 }
 
 /***************************************************************************************************************

@@ -60,7 +60,7 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
 	//Loop through the array, starting at i = 1 so we can look at the previous element
 	for(int i = 1; i<=arr->size; i++){
 		//If the checkTimestamp function returns 0, that means we have added to the array and therefore, we can return
-		if(checkTimestamp(arr, ev, i) == 0){
+		if(checkTimestamp(arr, ev, i) == C_OK){
 			return;
 		}
 
@@ -86,27 +86,22 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
 ************************************************************************************************/
 int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
 	if(strcmp(ev->room,arr->elements[i-1].room) == 0){
-		//Add at the beginning, hence i-1
-		if(ev->timestamp <= arr->elements[i-1].timestamp){
-			shiftAndAdd(arr, ev, i-1);	
-			return 0;
-		}
-
 		//Loop while the current room is equal to the evidence room
 		int indexCounter = i;
 		while(strcmp(ev->room, arr->elements[indexCounter].room) == 0){
 			//If at any point the room timestamp fits between shiftAndAdd then return
 			if(ev->timestamp >= arr->elements[indexCounter-1].timestamp && ev->timestamp <= arr->elements[indexCounter].timestamp){
 				shiftAndAdd(arr, ev, indexCounter);	
-				return 0;
+				return C_OK;
 			}
 			indexCounter++;
 		}
-		//If we are equal with the room but it does not go in the start or middle, it must go at the end
-		shiftAndAdd(arr, ev, indexCounter);	
-		return 0;
+
+		int insertPos = ev->timestamp <= arr->elements[i-1].timestamp ? i-1 : indexCounter;
+		shiftAndAdd(arr, ev, insertPos);
+		return C_OK;
 	}
-	return -1;
+	return C_NOK;
 }
 
 /***********************************************************************************************************
@@ -120,7 +115,7 @@ int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
 	elementShifter(arr, index);
 	arr->elements[index] = *ev;
 	arr->size++;
-	return 0;
+	return C_OK;
 }
 
 /*****************************************************************************************************
@@ -133,19 +128,19 @@ void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	//Build a string	
 	sprintf(stringBuilder, "%d | %20s | %8s |", evidence->id, evidence->room, evidence->device);
 	if(strcmp(evidence->device, "EMF") == 0){
-		char emfStr[50] = "";
+		char emfStr[MAX_STR] = "";
 		sprintf(emfStr, "%.1f%s", evidence->value, (evidence->value>4) ? " (HIGH) |" : " |");
 		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", emfStr);	
 	}else if(strcmp(evidence->device, "THERMAL") == 0){
-		char thermalStr[50] = "";
+		char thermalStr[MAX_STR] = "";
 		sprintf(thermalStr, "%.2f%s", evidence->value, (evidence->value<0.0) ? " (COLD) |" : " |");
 		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", thermalStr);	
 	}else{
-		char soundStr[50] = "";
+		char soundStr[MAX_STR] = "";
 		sprintf(soundStr, "%.1f%s", evidence->value, (evidence->value<35.0) ? " (WHISPER) |" : (evidence->value>70.0) ? " (SCREEM) |" : "  |");
 		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", soundStr);
 	}
-	char time[10] = "";
+	char time[MAX_STR] = "";
 	convertSecondsToTime(evidence->timestamp,time);
 	sprintf(stringBuilder + strlen(stringBuilder), "%10s", time);
 }
@@ -188,7 +183,7 @@ int foundId(NotebookType* arr, int id){
 			return i;
 		}
 	}
-	return -1;
+	return C_NOK;
 }
 
 /***********************************************************************************************
@@ -204,9 +199,9 @@ int delEvidence(NotebookType* arr, int id){
 			copyEvidence(&arr->elements[i], &arr->elements[i+1]);
     	}
 		arr->size--;
-		return 0;
+		return C_OK;
 	}
-	return -1;
+	return C_NOK;
 }
 
 /***********************************************************************************************

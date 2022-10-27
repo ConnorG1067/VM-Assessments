@@ -60,10 +60,16 @@ int main(void)
 			break;
 		case 2:
 			int desiredId;
-			printf("Enter the id you'd like to delete: ");
+			printf("Enter the ID you'd like to delete: ");
 			scanf("%d", &desiredId);
-
-			delEvidence(mainBook, desiredId);	
+			
+			//Attempt to delete Id, & print a user friendly message
+			if(delEvidence(mainBook, desiredId) == 0){
+				printf("\nID %d Deleted\n", desiredId);
+				printNotebook(mainBook);
+			}else{
+				printf("\nCould not find ID: %d\n", desiredId);
+			}
 			break;
 		case 3:
 			printNotebook(mainBook);

@@ -85,6 +85,7 @@ void addEvidence(NotebookType* arr, EvidenceType* ev){
  * Return an int which determines the success of the operation
 ************************************************************************************************/
 int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
+	//Check if the current room name matches the evidence room name
 	if(strcmp(ev->room,arr->elements[i-1].room) == 0){
 		//Loop while the current room is equal to the evidence room
 		int indexCounter = i;
@@ -112,7 +113,9 @@ int checkTimestamp(NotebookType* arr, EvidenceType* ev, int i){
  * Return an int which determines the success of the operation
 ************************************************************************************************************/
 int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
+	//Shift the elements to make room for the new evidence
 	elementShifter(arr, index);
+	//Insert the evidence and increase the size
 	arr->elements[index] = *ev;
 	arr->size++;
 	return C_OK;
@@ -165,6 +168,7 @@ void convertSecondsToTime(int seconds, char* time){
  * Returns an int to determine success
 ************************************************************************************************/
 int elementShifter(NotebookType* notebookArray, int shiftPos){
+	//Starting at the last element, copy all the evidence over by 1 until we reach shiftPosition
     for(int i = notebookArray->size-1; i>=shiftPos; i--){
 		copyEvidence(&notebookArray->elements[i+1], &notebookArray->elements[i]);
     }

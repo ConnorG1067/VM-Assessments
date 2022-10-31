@@ -36,7 +36,7 @@ void growNotebook(NotebookType* arr){
  * Return a void
 ************************************************************************************************/
 void printNotebook(NotebookType* arr){
-	printf("  ID |%16s Room |   Device |%11s Value  |  Timestamp\n", " ", " ");
+	printf("   ID |%16s Room |   Device |%11s Value  |  Timestamp\n", " ", " ");
 	for(int i = 0; i<arr->size; i++){
 	    char formattedStr[100] = "";
 		formatEvidence(&arr->elements[i], formattedStr);
@@ -129,7 +129,7 @@ int shiftAndAdd(NotebookType* arr, EvidenceType* ev, int index){
 ******************************************************************************************************/
 void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 	//Build a string	
-	sprintf(stringBuilder, "%d | %20s | %8s |", evidence->id, evidence->room, evidence->device);
+	sprintf(stringBuilder, "%5d | %20s | %8s |", evidence->id, evidence->room, evidence->device);
 	if(strcmp(evidence->device, "EMF") == 0){
 		char emfStr[MAX_STR] = "";
 		sprintf(emfStr, "%.1f%s", evidence->value, (evidence->value>4) ? " (HIGH) |" : " |");

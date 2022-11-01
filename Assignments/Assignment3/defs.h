@@ -44,4 +44,4 @@ int shiftAndAdd(NotebookType*, EvidenceType*, int);
 int checkTimestamp(NotebookType*, EvidenceType*, int);
 void printNotebook(NotebookType*);
 void cleanupNotebook(NotebookType*);
-
+int getUserInput(int*, char*, char*, float*, int*);

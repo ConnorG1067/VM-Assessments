@@ -9,7 +9,7 @@ int main(void)
 
   NotebookType* mainBook =  calloc(1, sizeof(NotebookType));
 
-  initNotebook(mainBook, 2);
+  initNotebook(mainBook, MAX_CAP);
   loadEvidenceData(mainBook);
   while(1){
 	printMenu(&choice);
@@ -17,45 +17,21 @@ int main(void)
     	case 1:
 	  		//getting user input
 	  		int id;
-	  		char roomName[MAX_STR];
-	  		int deviceNumber;
+	  		char* roomName = calloc(MAX_STR, sizeof(char));
 			float value;
-			int timestamp[3];
+			char* deviceType = calloc(8, sizeof(char));
+			int timestampAsSeconds;
 
-			//ID
-			printf("Enter an ID: ");
-			scanf("%d", &id);
+			//Get the user input using pass by reference
+			getUserInput(&id, roomName, deviceType, &value, &timestampAsSeconds);
 
-
-			//Room Name
-			printf("Enter a room name: "); 
-			scanf(" ");
-			fgets(roomName, sizeof(roomName), stdin);
-			roomName[strcspn(roomName, "\n")] = '\0';
-
-			//device number
-			printf("Enter the device code [EMF: 1, THERMAL: 2, SOUND: 3]: ");
-			scanf("%d", &deviceNumber);
-
-			//Value
-			printf("Enter the value: ");
-			scanf("%f", &value);
-
-			//Time stamp
-			int timestampSize = 0;
-			printf("Enter the timestamp (hours minutes seconds, space separated): ");
-			while(timestampSize<3){
-				scanf("%d", &timestamp[timestampSize++]);
-			}
-
-			char* device = calloc(8, sizeof(char));
-			deviceSelector(device, deviceNumber);
-			
-			int timestampAsSeconds = timestampToSeconds(timestamp);
-
+			//Init evidence
 			EvidenceType tempEvidence;
-			initEvidence(id, roomName, device, value, timestampAsSeconds, &tempEvidence);
-			free(device);
+			initEvidence(id, roomName, deviceType, value, timestampAsSeconds, &tempEvidence);
+			//Free the device string
+			free(deviceType);
+			free(roomName);
+			//Add the evidence
 			addEvidence(mainBook, &tempEvidence);
 			break;
 		case 2:
@@ -82,6 +58,63 @@ int main(void)
   	}
   }
   return C_OK;
+}
+
+
+/***************************************************************************************************************
+ * Helper Function: Gets user input and error checks specific values
+ * timestampArray: in parameter, consisting of 3 integer values which represent the hours, minutes and seconds
+ * Returns an integer of the seconds
+****************************************************************************************************************/
+int getUserInput(int* id, char* roomName, char* deviceType, float* value, int* timestampAsSeconds){
+	//Defualt helper variables
+	int deviceNumber;
+	int timestamp[3];
+	char tempRoomName[MAX_STR];
+	
+	//Getting the ID
+	printf("Enter an ID: ");
+	scanf("%d", id);
+
+	while(*id >= 100000 || *id < 0){
+		printf("Enter a valid ID: ");
+		scanf("%d", id);
+	}
+	
+
+	//Getting the room name 	
+	printf("Enter a room name: "); 
+	scanf(" ");
+	fgets(tempRoomName, sizeof(tempRoomName), stdin);
+	tempRoomName[strcspn(tempRoomName, "\n")] = '\0';
+	strcpy(roomName, tempRoomName);
+
+
+	//device number
+	printf("Enter the device code [EMF: 1, THERMAL: 2, SOUND: 3]: ");
+	scanf("%d", &deviceNumber);
+	while(deviceNumber > 3 || deviceNumber < 0){
+		printf("Enter a valid device code [EMF: 1, THERMAL: 2, SOUND: 3]: ");
+		scanf("%d", &deviceNumber);
+
+	}
+	//Copys a string based on the device number
+	deviceSelector(deviceType, deviceNumber);
+
+	//Getting the value
+	printf("Enter the value: ");
+	scanf("%f", value);
+
+	//getting the time stamp
+	int timestampSize = 0;
+	printf("Enter the timestamp (hours minutes seconds, space separated): ");
+	while(timestampSize<3){
+		scanf("%d", &timestamp[timestampSize++]);
+	}
+
+	*timestampAsSeconds = timestampToSeconds(timestamp);
+
+	return 0;
 }
 
 /***************************************************************************************************************

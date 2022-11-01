@@ -140,7 +140,7 @@ void formatEvidence(EvidenceType* evidence, char* stringBuilder){
 		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", thermalStr);	
 	}else{
 		char soundStr[MAX_STR] = "";
-		sprintf(soundStr, "%.1f%s", evidence->value, (evidence->value<35.0) ? " (WHISPER) |" : (evidence->value>70.0) ? " (SCREEM) |" : "  |");
+		sprintf(soundStr, "%.1f%s", evidence->value, (evidence->value<35.0) ? " (WHISPER) |" : (evidence->value>70.0) ? " (SCREEM) |" : " |");
 		sprintf(stringBuilder + strlen(stringBuilder), "  %18s", soundStr);
 	}
 	char time[MAX_STR] = "";

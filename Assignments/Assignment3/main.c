@@ -7,10 +7,11 @@ int main(void)
 {
   int choice = 0;
 
+  //Creating a note book and loading data
   NotebookType* mainBook =  calloc(1, sizeof(NotebookType));
-
   initNotebook(mainBook, MAX_CAP);
   loadEvidenceData(mainBook);
+
   while(1){
 	printMenu(&choice);
 	switch(choice){
@@ -48,9 +49,11 @@ int main(void)
 			}
 			break;
 		case 3:
+			//printing the note book
 			printNotebook(mainBook);
 			break;
 		case 0:
+			//cleanup note book
   			cleanupNotebook(mainBook);
 			return C_OK;
 
@@ -63,8 +66,13 @@ int main(void)
 
 /***************************************************************************************************************
  * Helper Function: Gets user input and error checks specific values
- * timestampArray: in parameter, consisting of 3 integer values which represent the hours, minutes and seconds
- * Returns an integer of the seconds
+ * ALL OUT PARAMETERS
+ * id: Integer pointer for a pass by reference for the id
+ * roomName: To populate a char array for the room name
+ * deviceType: Populate a deviceType char array for the device type
+ * value: Float pointer for a pass by reference for the value
+ * timestampAsSeconds: Integer pointer for a pass by reference for the time
+ * Returns integer for the success
 ****************************************************************************************************************/
 int getUserInput(int* id, char* roomName, char* deviceType, float* value, int* timestampAsSeconds){
 	//Defualt helper variables
@@ -75,7 +83,7 @@ int getUserInput(int* id, char* roomName, char* deviceType, float* value, int* t
 	//Getting the ID
 	printf("Enter an ID: ");
 	scanf("%d", id);
-
+	//Making sure the id is between 0 and 100,000 inclusive
 	while(*id >= 100000 || *id < 0){
 		printf("Enter a valid ID: ");
 		scanf("%d", id);
@@ -110,6 +118,15 @@ int getUserInput(int* id, char* roomName, char* deviceType, float* value, int* t
 	printf("Enter the timestamp (hours minutes seconds, space separated): ");
 	while(timestampSize<3){
 		scanf("%d", &timestamp[timestampSize++]);
+	}
+	//Checking if the timestamp is a valid time
+	while((timestamp[0] < 0 || timestamp[0] > 23)||(timestamp[1] < 0 || timestamp[1] > 59)||(timestamp[2] < 0 || timestamp[2] > 59)){
+		//getting the time stamp
+		timestampSize = 0;
+		printf("Enter a valid time (hours minutes seconds, space separated): ");
+		while(timestampSize<3){
+			scanf("%d", &timestamp[timestampSize++]);
+		}
 	}
 
 	*timestampAsSeconds = timestampToSeconds(timestamp);

@@ -1,5 +1,13 @@
 Author: Connor Gomes
 Student ID: 101231686
+
+
+List of files
+	main.c
+	defs.h
+	Evidence.c
+	init.c
+
 Decription:
 	Used for logging ghost hunter information
 	The user may add, delete or view the evidence

@@ -28,22 +28,47 @@ typedef struct {
  
 
 /*** Define the RoomArrayType here ***/
- 
+typedef struct {
+	GhostType *elements[MAX_ARR];
+	int size;
+} RoomArrayType;
+
 /*** Define the NodeType here ***/
+typedef struct Node{
+	GhostType data;
+	struct Node* next;
+} NodeType;
  
 /*** Complete the GhostListType here ***/
-typedef struct GhostList {
- 
+typedef struct {
+	NodeType* head;
+	NodeType* tail;
 } GhostListType;
 
 /*** Complete the BuildingType here ***/
 typedef struct Building {
- 
+	GhostListType ghosts;
+	RoomArrayType rooms[MAX_ARR];
 } BuildingType;
  
  
 void printMenu(int*);
+void initGhostList(GhostListType*);
+void initGhost(int, GhostEnumType, RoomType*, float, GhostType**);
+void addGhost(GhostListType *, GhostType*);
+void addGhostByLikelihood(GhostListType *, GhostType *);
+void cleanupGhostData(GhostListType *);
+void cleanupGhostData(GhostListType *);
+void cleanupGhostList(GhostListType *);
+void printGhost(GhostType *);
+void printGhosts(GhostListType *, int);
+void printByLikelihood(GhostListType *, int);
+void initRoomArray(RoomArrayType *);
+void initRoom(int, char*, RoomType**);
+void addRoom(RoomArrayType *, RoomType *);
+void cleanupRoomArray(RoomArrayType*);
+void printRooms(RoomArrayType*);
+void initBuilding(BuildingType *);
+void cleanupBuilding(BuildingType *);
  
  
- 
-

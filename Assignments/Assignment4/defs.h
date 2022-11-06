@@ -40,7 +40,7 @@ typedef struct Node{
 } NodeType;
  
 /*** Complete the GhostListType here ***/
-typedef struct {
+typedef struct GhostList {
 	NodeType* head;
 	NodeType* tail;
 } GhostListType;

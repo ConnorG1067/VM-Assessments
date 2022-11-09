@@ -14,13 +14,13 @@ int main()
 	  printRooms(&building.rooms);
 	  break;
 	case 2:
-	  printGhosts(&building.ghosts, 0);
+	  printGhosts(&building.ghosts, C_TRUE);
 	  break;
 	case 3:
-	  printf("3");
+	  //TODO, NOT IMPLEMENTED
 	  break;
   }
-  cleanupBuilding(&building);
+  //cleanupBuilding(&building);
   return(0);
 }
 

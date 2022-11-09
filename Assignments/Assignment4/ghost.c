@@ -28,12 +28,22 @@ void addGhost(GhostListType *list, GhostType *ghost){
 	currentNode->data = ghost;
 	currentNode->next = NULL;
 
+	
 	//Setting the end of the list to the new node
-	if(list->tail == NULL){
+	if(list->head == NULL){
+		list->head = currentNode;
 		list->tail = currentNode;
 	}else{
 		list->tail->next = currentNode;
+		list->tail = list->tail->next;
 	}
+	
+	/*
+	printf("-------------------------------\n");
+	printGhosts(list, 0);
+	
+	printf("-------------------------------\n");
+	*/
 		
 }
 
@@ -87,7 +97,7 @@ void cleanupGhostList(GhostListType *list){
 }
 
 void printGhost(GhostType *ghost){
-	printf("ID: %d\tName: %d\tRoom: %s\tLikelihood: %f\n", ghost->id, ghost->ghostType, ghost->room->name, ghost->likelihood);
+	printf("ID: %d\tName: %d\tRoom: %s\tLikelihood: %f\n", ghost->id, ghost->ghostType, (ghost->room != NULL) ? ghost->room->name : "N/A", ghost->likelihood);
 }
 
 void printGhosts(GhostListType *list, int ends){

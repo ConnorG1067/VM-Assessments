@@ -29,13 +29,13 @@ typedef struct {
 
 /*** Define the RoomArrayType here ***/
 typedef struct {
-	GhostType *elements[MAX_ARR];
+	RoomType *elements[MAX_ARR];
 	int size;
 } RoomArrayType;
 
 /*** Define the NodeType here ***/
 typedef struct Node{
-	GhostType data;
+	GhostType *data;
 	struct Node* next;
 } NodeType;
  
@@ -48,10 +48,10 @@ typedef struct GhostList {
 /*** Complete the BuildingType here ***/
 typedef struct Building {
 	GhostListType ghosts;
-	RoomArrayType rooms[MAX_ARR];
+	RoomArrayType rooms;
 } BuildingType;
  
- 
+void loadBuildingData(BuildingType*); 
 void printMenu(int*);
 void initGhostList(GhostListType*);
 void initGhost(int, GhostEnumType, RoomType*, float, GhostType**);

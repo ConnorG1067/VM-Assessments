@@ -22,14 +22,19 @@ void initGhost(int id, GhostEnumType gt, RoomType *r, float like, GhostType **gh
 
 void addGhost(GhostListType *list, GhostType *ghost){
 	//Making a new node
-	NodeType *currentNode = malloc(sizeof(NodeType));
+	struct Node *currentNode = malloc(sizeof(NodeType));
 
 	//Setting the values of new node
-	currentNode->data = *ghost;
+	currentNode->data = ghost;
 	currentNode->next = NULL;
 
 	//Setting the end of the list to the new node
-	list->tail->next = currentNode;
+	if(list->tail == NULL){
+		list->tail = currentNode;
+	}else{
+		list->tail->next = currentNode;
+	}
+		
 }
 
 //COULD BE DOG SHIT I DUNNO
@@ -39,17 +44,17 @@ void addGhostByLikelihood(GhostListType *list, GhostType *ghost){
 
 	//Make a node for the currentGhost
 	NodeType *ghostNode = malloc(sizeof(NodeType));
-	ghostNode->data = *ghost;
+	ghostNode->data = ghost;
 
 	
-	if(ghost->likelihood >= list->head->data.likelihood){
+	if(ghost->likelihood >= list->head->data->likelihood){
 		ghostNode->next = list->head;
 		list->head = ghostNode;
 		return;
 	}
 	
 	while(traverseNode != NULL){
-		if(ghost->likelihood >= traverseNode->next->data.likelihood){
+		if(ghost->likelihood >= traverseNode->next->data->likelihood){
 			NodeType *tempNode = traverseNode->next;
 			traverseNode->next = ghostNode;
 			ghostNode->next = tempNode;
@@ -63,7 +68,32 @@ void addGhostByLikelihood(GhostListType *list, GhostType *ghost){
 }
 
 //Free Stuff
-void cleanupGhostData(GhostListType *list){
-	
+void cleanupGhostData(GhostListType *list){	
+	NodeType *tempNode = list->head;
+	while(tempNode != NULL){
+		free(tempNode->data);
+		tempNode = tempNode->next;
+	}
+}
 
+
+//SHOULD BREAK :/
+void cleanupGhostList(GhostListType *list){
+	NodeType *tempNode = list->head;
+	while(tempNode != NULL){
+		free(tempNode);
+		tempNode = tempNode->next;
+	}
+}
+
+void printGhost(GhostType *ghost){
+	printf("ID: %d\tName: %d\tRoom: %s\tLikelihood: %f\n", ghost->id, ghost->ghostType, ghost->room->name, ghost->likelihood);
+}
+
+void printGhosts(GhostListType *list, int ends){
+	NodeType *loopNode = list->head;
+	while(loopNode != NULL){
+		printGhost(loopNode->data);
+		loopNode = loopNode->next;
+	}
 }

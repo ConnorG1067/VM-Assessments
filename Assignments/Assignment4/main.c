@@ -2,7 +2,25 @@
 
 int main()
 {
-
+  int selection = 0;
+  printMenu(&selection);
+  BuildingType building;
+  initBuilding(&building);
+  loadBuildingData(&building);
+  switch(selection){
+    case 0:
+	  break;
+	case 1:
+	  printRooms(&building.rooms);
+	  break;
+	case 2:
+	  printGhosts(&building.ghosts, 0);
+	  break;
+	case 3:
+	  printf("3");
+	  break;
+  }
+  cleanupBuilding(&building);
   return(0);
 }
 

@@ -7,9 +7,8 @@ void initGhostList(GhostListType *list){
 }
 
 void initGhost(int id, GhostEnumType gt, RoomType *r, float like, GhostType **ghost){
-	//Allocate for GhostType
-	GhostType *ghostPointer = calloc(1, sizeof(GhostType));
-
+	//Allocate for GhostType	
+	GhostType *ghostPointer = malloc(sizeof(GhostType));
 	//Set Fields
 	ghostPointer->id = id;
 	ghostPointer->ghostType = gt;
@@ -18,11 +17,12 @@ void initGhost(int id, GhostEnumType gt, RoomType *r, float like, GhostType **gh
 
 	//Set the pointer to the new ghost pointer
 	*ghost = ghostPointer;
+	
 }
 
 void addGhost(GhostListType *list, GhostType *ghost){
 	//Making a new node
-	struct Node *currentNode = malloc(sizeof(NodeType));
+	NodeType *currentNode = malloc(sizeof(NodeType));
 
 	//Setting the values of new node
 	currentNode->data = ghost;
@@ -38,32 +38,30 @@ void addGhost(GhostListType *list, GhostType *ghost){
 		list->tail = list->tail->next;
 	}
 	
-	/*
-	printf("-------------------------------\n");
-	printGhosts(list, 0);
-	
-	printf("-------------------------------\n");
-	*/
 		
 }
 
-//COULD BE DOG SHIT I DUNNO
 void addGhostByLikelihood(GhostListType *list, GhostType *ghost){
-	//Traverse through the linked list and compare the likelihood of the current ghost to the other ghosts
-	NodeType *traverseNode = list->head;
-
-	//Make a node for the currentGhost
 	NodeType *ghostNode = malloc(sizeof(NodeType));
 	ghostNode->data = ghost;
-
+	ghostNode->next = NULL;
 	
+	//LIST IS EMPTY
+	if(list->head == NULL){
+		list->head = ghostNode;
+		list->tail = ghostNode;
+		return;
+	}
+    //IF WE REPLACE FRONT	
 	if(ghost->likelihood >= list->head->data->likelihood){
 		ghostNode->next = list->head;
 		list->head = ghostNode;
 		return;
 	}
 	
-	while(traverseNode != NULL){
+	//Traverse through the linked list and compare the likelihood of the current ghost to the other ghosts
+	NodeType *traverseNode = list->head;
+	while(traverseNode->next != NULL){
 		if(ghost->likelihood >= traverseNode->next->data->likelihood){
 			NodeType *tempNode = traverseNode->next;
 			traverseNode->next = ghostNode;
@@ -72,12 +70,12 @@ void addGhostByLikelihood(GhostListType *list, GhostType *ghost){
 		}
 		traverseNode = traverseNode->next;
 	}
-
+	
 	list->tail->next = ghostNode;
-	ghostNode->next = NULL;
+	list->tail = ghostNode;
+	ghostNode->next = NULL;	
 }
 
-//Free Stuff
 void cleanupGhostData(GhostListType *list){	
 	NodeType *tempNode = list->head;
 	while(tempNode != NULL){
@@ -87,23 +85,54 @@ void cleanupGhostData(GhostListType *list){
 }
 
 
-//SHOULD BREAK :/
 void cleanupGhostList(GhostListType *list){
-	NodeType *tempNode = list->head;
-	while(tempNode != NULL){
+	NodeType *tempNode;
+	while(list->head != NULL){
+		tempNode = list->head;
+		list->head = list->head->next;
 		free(tempNode);
-		tempNode = tempNode->next;
 	}
 }
 
 void printGhost(GhostType *ghost){
-	printf("ID: %d\tName: %d\tRoom: %s\tLikelihood: %f\n", ghost->id, ghost->ghostType, (ghost->room != NULL) ? ghost->room->name : "N/A", ghost->likelihood);
+	printf("|%-12d %-14s %-19s %-7.2f|\n", ghost->id,typeToString(ghost->ghostType), (ghost->room != NULL) ? ghost->room->name : "N/A", ghost->likelihood);
 }
 
-void printGhosts(GhostListType *list, int ends){
+void printGhosts(GhostListType *list, int ends){	
 	NodeType *loopNode = list->head;
 	while(loopNode != NULL){
 		printGhost(loopNode->data);
 		loopNode = loopNode->next;
 	}
+
+	if(ends == C_TRUE){
+		printf("\nHead and Tail\n");
+		printGhost(list->head->data);
+		printGhost(list->tail->data);
+
+	}
+
+}
+
+void printByLikelihood(GhostListType *origList, int ends){
+	GhostListType tempList;
+	GhostListType *tempListPtr = &tempList;
+	initGhostList(tempListPtr);
+
+	
+	NodeType *tempOrigHead = origList->head;
+	while(tempOrigHead != NULL){
+		addGhostByLikelihood(tempListPtr, tempOrigHead->data);
+		tempOrigHead = tempOrigHead->next;
+	}
+
+	
+	NodeType *tempTraverse = tempListPtr->head;
+	while(tempTraverse != NULL){
+		printGhost(tempTraverse->data);
+		tempTraverse = tempTraverse->next;
+		
+	}
+
+	cleanupGhostList(tempListPtr);
 }

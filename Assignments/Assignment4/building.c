@@ -109,5 +109,7 @@ void initBuilding(BuildingType *b){
 
 void cleanupBuilding(BuildingType *b){
 	cleanupRoomArray(&b->rooms);
+	cleanupGhostData(&b->ghosts);
+	cleanupGhostList(&b->ghosts);
 }
 

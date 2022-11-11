@@ -2,26 +2,30 @@
 
 int main()
 {
-  int selection = 0;
-  printMenu(&selection);
-  BuildingType building;
-  initBuilding(&building);
-  loadBuildingData(&building);
-  switch(selection){
-    case 0:
-	  break;
-	case 1:
-	  printRooms(&building.rooms);
-	  break;
-	case 2:
-	  printGhosts(&building.ghosts, C_TRUE);
-	  break;
-	case 3:
-	  //TODO, NOT IMPLEMENTED
-	  break;
-  }
-  //cleanupBuilding(&building);
-  return(0);
+  	BuildingType building;
+  	initBuilding(&building);
+  	loadBuildingData(&building);
+  while(1){
+	int selection = 0;
+	printMenu(&selection);
+  	switch(selection){
+    	case 0:
+  			cleanupBuilding(&building);
+			return 0;
+	  		break;
+		case 1:
+	  		printRooms(&building.rooms);
+	  		break;
+		case 2:
+	  		printGhosts(&building.ghosts, C_TRUE);
+	  		break;
+		case 3:
+	  		printByLikelihood(&building.ghosts, 0);
+	  		break;
+  	}
+
+
+ }
 }
 
 void printMenu(int *choice)

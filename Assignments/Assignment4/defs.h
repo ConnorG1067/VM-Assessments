@@ -50,7 +50,8 @@ typedef struct Building {
 	GhostListType ghosts;
 	RoomArrayType rooms;
 } BuildingType;
- 
+
+char* typeToString(GhostEnumType);
 void loadBuildingData(BuildingType*); 
 void printMenu(int*);
 void initGhostList(GhostListType*);

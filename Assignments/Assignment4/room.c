@@ -14,7 +14,7 @@ void initRoom(int id, char *name, RoomType **room){
 	GhostListType *currentGhostList = malloc(sizeof(GhostListType));
 	initGhostList(currentGhostList);
 	currentRoom->ghosts = currentGhostList;
-	
+   	
 	*room = currentRoom;
 }
 
@@ -24,18 +24,20 @@ void addRoom(RoomArrayType *arr, RoomType *r){
 
 void cleanupRoomArray(RoomArrayType *arr){
 	for(int i = 0; i<arr->size; i++){
-		cleanupGhostData(arr->elements[i]->ghosts);
+		//cleanupGhostData(arr->elements[i]->ghosts);
 		cleanupGhostList(arr->elements[i]->ghosts);
+		free(arr->elements[i]->ghosts);
 		free(arr->elements[i]);
-
 	}
 }
 
 void printRooms(RoomArrayType *arr){
+	printf("\n");
 	for(int i = 0; i<arr->size; i++){
-		printf("ROOM: %s\n ", arr->elements[i]->name);
-		printGhosts(arr->elements[i]->ghosts, 0);
+		printf("---------------------------------------------------------\n");
+		printf("|%-4d %-50s|\n", arr->elements[i]->id, arr->elements[i]->name);
+		printGhosts(arr->elements[i]->ghosts, C_FALSE);
+		printf("---------------------------------------------------------\n\n");
 	}
-
 }
 

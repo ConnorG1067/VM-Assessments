@@ -1,33 +1,40 @@
 #include "defs.h"
 
-int main()
-{
+int main(){
+	//Making, initalizing and loading a building type
   	BuildingType building;
   	initBuilding(&building);
   	loadBuildingData(&building);
-  while(1){
-	int selection = 0;
-	printMenu(&selection);
-  	switch(selection){
-    	case 0:
-  			cleanupBuilding(&building);
-			return 0;
-	  		break;
-		case 1:
-	  		printRooms(&building.rooms);
-	  		break;
-		case 2:
-	  		printGhosts(&building.ghosts, C_TRUE);
-	  		break;
-		case 3:
-	  		printByLikelihood(&building.ghosts, 0);
-	  		break;
-  	}
-
-
- }
+ 	 while(1){
+		//print the menu
+		int selection = 0;
+		printMenu(&selection);
+  		switch(selection){
+    		case 0:
+  				cleanupBuilding(&building);
+				return 0;
+	  			break;
+			case 1:
+	  			printRooms(&building.rooms);
+	  			break;
+			case 2:
+				printf("\n---------------------------------------------------------\n");
+	  			printGhosts(&building.ghosts, C_TRUE);
+				printf("---------------------------------------------------------\n");
+	  			break;
+			case 3:
+				printf("\n---------------------------------------------------------\n");
+	  			printByLikelihood(&building.ghosts, 0);
+				printf("---------------------------------------------------------\n");
+	  			break;
+  		}
+ 	}
 }
 
+/*********************************************************************************************
+ * print the menu for th user
+ * out: choice, the selection for the user
+ *********************************************************************************************/
 void printMenu(int *choice)
 {
   int c = -1;

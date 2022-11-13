@@ -1,5 +1,11 @@
+#include <stdio.h>
 #include "defs.h"
 
+
+/*********************************************************************************************
+ * load the building data for the building
+ * out: Used to load the building b
+ *********************************************************************************************/
 void loadBuildingData(BuildingType *building)
 {
   GhostType*  ghost;
@@ -102,11 +108,19 @@ void loadBuildingData(BuildingType *building)
 
 }
 
+/*********************************************************************************************
+ * Initalize the building by initalizing its fields
+ * out: Used to initalize the particular building b
+ *********************************************************************************************/
 void initBuilding(BuildingType *b){ 
   initGhostList(&b->ghosts);
   initRoomArray(&b->rooms);
 }
 
+/*********************************************************************************************
+ * cleans the building
+ * out: Used to clean the building b
+ *********************************************************************************************/
 void cleanupBuilding(BuildingType *b){
 	cleanupRoomArray(&b->rooms);
 	cleanupGhostData(&b->ghosts);

@@ -42,6 +42,7 @@ void addRoom(RoomArrayType *arr, RoomType *r){
  * in: arr, is the array of rooms that are to be cleaned 
  *********************************************************************************************/
 void cleanupRoomArray(RoomArrayType *arr){
+	//Loop throught the array and cleanup allocated memory
 	for(int i = 0; i<arr->size; i++){
 		cleanupGhostList(arr->elements[i]->ghosts);
 		free(arr->elements[i]->ghosts);
@@ -54,6 +55,7 @@ void cleanupRoomArray(RoomArrayType *arr){
  *********************************************************************************************/
 void printRooms(RoomArrayType *arr){
 	printf("\n");
+	//Loop throught the array and print the data
 	for(int i = 0; i<arr->size; i++){
 		printf("---------------------------------------------------------\n");
 		printf("|%-4d %-50s|\n", arr->elements[i]->id, arr->elements[i]->name);

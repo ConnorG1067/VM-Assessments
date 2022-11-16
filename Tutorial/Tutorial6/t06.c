@@ -84,7 +84,7 @@ void appendStudent(StudentList* stuList, StudentNode* a){
 void printList(const StudentList *stuList) {
 	StudentNode *tempNode = stuList->head;
 	while(tempNode != NULL){
-		printf("%s %s is %d years old and has a GPA of %.2f. Their student number is %s.\n", tempNode->data->basicInfo.first, tempNode->data->basicInfo.last, tempNode->data->basicInfo.age, tempNode->data->gpa ,tempNode->data->stuNumber);
+	    printStudent(tempNode->data);	
 		tempNode = tempNode->next;
 	}
 

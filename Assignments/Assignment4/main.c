@@ -13,7 +13,6 @@ int main(){
     		case 0:
   				cleanupBuilding(&building);
 				return 0;
-	  			break;
 			case 1:
 	  			printRooms(&building.rooms);
 	  			break;
@@ -29,6 +28,7 @@ int main(){
 	  			break;
   		}
  	}
+	return 0;
 }
 
 /*********************************************************************************************
